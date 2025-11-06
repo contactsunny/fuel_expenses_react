@@ -4,3 +4,5 @@
   --color-brand: #0ea5e9;
   --color-brand-dark: #0284c7;
 }
+
+@custom-variant dark (&:where(.dark, .dark *));
