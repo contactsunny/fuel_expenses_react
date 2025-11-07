@@ -13,6 +13,7 @@ import AnalyticsVehicleCategory from './pages/Analytics/AnalyticsVehicleCategory
 import AnalyticsFuelPrice from './pages/Analytics/AnalyticsFuelPrice'
 import AnalyticsFuelType from './pages/Analytics/AnalyticsFuelType'
 import { FuelRecordProvider } from './contexts/FuelRecordContext'
+import InstallPrompt from './components/InstallPrompt'
 
 function RequireAuth({ children }: { children: ReactElement }) {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
@@ -22,18 +23,19 @@ function RequireAuth({ children }: { children: ReactElement }) {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route
-        path="/live"
-        element={
-          <RequireAuth>
-            <FuelRecordProvider>
-              <Layout />
-            </FuelRecordProvider>
-          </RequireAuth>
-        }
-      >
+    <>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route
+          path="/live"
+          element={
+            <RequireAuth>
+              <FuelRecordProvider>
+                <Layout />
+              </FuelRecordProvider>
+            </RequireAuth>
+          }
+        >
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="records" element={<Dashboard />} />
         <Route path="settings" element={<Settings />} />
@@ -47,5 +49,7 @@ export default function App() {
         <Route path="analytics/vsChart" element={<AnalyticsFuelType />} />
       </Route>
     </Routes>
+    <InstallPrompt />
+    </>
   )
 }

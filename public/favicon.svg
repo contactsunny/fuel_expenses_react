@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0284c7;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Background rounded square -->
+  <rect x="4" y="4" width="92" height="92" rx="20" fill="url(#grad)"/>
+  
+  <!-- Car (simple, recognizable side view) -->
+  <!-- Car body (main shape) -->
+  <path d="M 18 52 L 18 80 L 22 84 L 28 84 L 32 80 L 36 80 L 40 84 L 52 84 L 56 80 L 60 80 L 64 84 L 70 84 L 74 80 L 74 52 L 70 46 L 66 42 L 60 40 L 50 40 L 40 40 L 34 42 L 30 46 Z" fill="white" opacity="0.95"/>
+  
+  <!-- Front hood -->
+  <rect x="18" y="52" width="12" height="8" fill="white" opacity="0.95"/>
+  
+  <!-- Windshield (angled) -->
+  <path d="M 30 46 L 30 52 L 34 50 L 40 48 L 40 46 Z" fill="url(#grad)" opacity="0.25"/>
+  
+  <!-- Front window -->
+  <rect x="40" y="46" width="12" height="10" rx="1.5" fill="url(#grad)" opacity="0.25"/>
+  
+  <!-- Rear window -->
+  <rect x="54" y="46" width="12" height="10" rx="1.5" fill="url(#grad)" opacity="0.25"/>
+  
+  <!-- Rear section -->
+  <rect x="66" y="46" width="8" height="8" fill="white" opacity="0.95"/>
+  
+  <!-- Wheel wells (cutouts) -->
+  <ellipse cx="30" cy="80" rx="6" ry="4" fill="url(#grad)" opacity="0.95"/>
+  <ellipse cx="66" cy="80" rx="6" ry="4" fill="url(#grad)" opacity="0.95"/>
+  
+  <!-- Wheels (in wheel wells) -->
+  <circle cx="30" cy="80" r="5" fill="url(#grad)" opacity="0.35"/>
+  <circle cx="66" cy="80" r="5" fill="url(#grad)" opacity="0.35"/>
+  <circle cx="30" cy="80" r="3.5" fill="white" opacity="0.7"/>
+  <circle cx="66" cy="80" r="3.5" fill="white" opacity="0.7"/>
+</svg>
