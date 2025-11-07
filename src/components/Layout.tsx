@@ -1,29 +1,36 @@
 import { useEffect, useState } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
 
 export default function Layout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [screenWidth, setScreenWidth] = useState<number>(
     typeof window !== "undefined" ? window.innerWidth : 1024
   );
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(() => {
+    // Initialize sidebar state based on initial screen width
+    return typeof window !== "undefined" ? window.innerWidth >= 768 : true;
+  });
   const navigate = useNavigate();
+  const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+  
+  // Check if we're on an Analytics page
+  const isAnalyticsPage = location.pathname.startsWith("/live/analytics");
 
   useEffect(() => {
-    const onResize = () => setScreenWidth(window.innerWidth);
+    const onResize = () => {
+      const newWidth = window.innerWidth;
+      setScreenWidth(newWidth);
+      // Automatically show/hide sidebar based on screen width
+      if (newWidth >= 768) {
+        setSidebarOpen(true);
+      } else {
+        setSidebarOpen(false);
+      }
+    };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
-
-  useEffect(() => {
-    // Automatically show/hide sidebar based on screen width
-    if (screenWidth >= 768) {
-      setSidebarOpen(true);
-    } else {
-      setSidebarOpen(false);
-    }
-  }, [screenWidth]);
 
   const getUserData = () => {
     const user = localStorage.getItem("user");
@@ -214,15 +221,19 @@ export default function Layout() {
               to="/live/records"
               className={({ isActive }: { isActive: boolean }) =>
                 `block px-3 py-2 rounded-md flex items-center ${
-                  isActive ? "bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
+                  isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
                 }`
               }
             >
               <span className="mr-2">📋</span>
               Records
             </NavLink>
-            <details>
-              <summary className="px-3 py-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer text-slate-700 dark:text-slate-300 list-none">
+            <details open={isAnalyticsPage}>
+              <summary className={`px-3 py-2 rounded-md cursor-pointer list-none ${
+                isAnalyticsPage 
+                  ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" 
+                  : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
+              }`}>
                 <span className="flex items-center">
                   <span className="mr-2">📊</span>
                   Analytics
@@ -233,7 +244,7 @@ export default function Layout() {
                   to="/live/analytics/vehicleCategory"
                   className={({ isActive }: { isActive: boolean }) =>
                     `block px-3 py-2 rounded-md text-sm ${
-                      isActive ? "bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100 font-medium" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-400"
+                      isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-400"
                     }`
                   }
                 >
@@ -243,7 +254,7 @@ export default function Layout() {
                   to="/live/analytics/fuelPrice"
                   className={({ isActive }: { isActive: boolean }) =>
                     `block px-3 py-2 rounded-md text-sm ${
-                      isActive ? "bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100 font-medium" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-400"
+                      isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-400"
                     }`
                   }
                 >
@@ -253,7 +264,7 @@ export default function Layout() {
                   to="/live/analytics/vsChart"
                   className={({ isActive }: { isActive: boolean }) =>
                     `block px-3 py-2 rounded-md text-sm ${
-                      isActive ? "bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100 font-medium" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-400"
+                      isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-400"
                     }`
                   }
                 >
@@ -265,7 +276,7 @@ export default function Layout() {
               to="/live/vehicles"
               className={({ isActive }: { isActive: boolean }) =>
                 `block px-3 py-2 rounded-md flex items-center ${
-                  isActive ? "bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
+                  isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
                 }`
               }
             >
@@ -276,7 +287,7 @@ export default function Layout() {
               to="/live/categories"
               className={({ isActive }: { isActive: boolean }) =>
                 `block px-3 py-2 rounded-md flex items-center ${
-                  isActive ? "bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
+                  isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
                 }`
               }
             >
@@ -287,7 +298,7 @@ export default function Layout() {
               to="/live/serviceRecords"
               className={({ isActive }: { isActive: boolean }) =>
                 `block px-3 py-2 rounded-md flex items-center ${
-                  isActive ? "bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
+                  isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
                 }`
               }
             >
@@ -302,7 +313,7 @@ export default function Layout() {
               to="/live/profile"
               className={({ isActive }: { isActive: boolean }) =>
                 `block px-3 py-2 rounded-md flex items-center ${
-                  isActive ? "bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
+                  isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
                 }`
               }
             >
