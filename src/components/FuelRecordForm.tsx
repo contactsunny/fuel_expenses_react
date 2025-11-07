@@ -144,9 +144,9 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto mx-auto" onClick={(e) => e.stopPropagation()}>
-        <div className="p-4 sm:p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-x-hidden" onClick={onClose}>
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto overflow-x-hidden mx-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="p-4 sm:p-6 min-w-0">
           <h2 className="text-xl font-semibold dark:text-slate-100 mb-4">
             {record ? 'Edit Fuel Record' : 'Add Fuel Record'}
           </h2>
@@ -157,9 +157,9 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 min-w-0">
             {/* Date Field */}
-            <div>
+            <div className="min-w-0">
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Date
               </label>
@@ -167,9 +167,10 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
                 type="date"
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full min-w-0 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 style={{
-                  colorScheme: theme === 'dark' ? 'dark' : 'light'
+                  colorScheme: theme === 'dark' ? 'dark' : 'light',
+                  maxWidth: '100%'
                 }}
                 required
                 autoComplete="off"
@@ -179,7 +180,7 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
             </div>
 
             {/* Vehicle Dropdown */}
-            <div>
+            <div className="min-w-0">
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Vehicle
               </label>
@@ -189,7 +190,7 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
                 <select
                   value={formData.vehicleId}
                   onChange={(e) => setFormData({ ...formData, vehicleId: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full min-w-0 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 >
                   <option value="">Select a vehicle</option>
@@ -203,7 +204,7 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
             </div>
 
             {/* Amount Field */}
-            <div>
+            <div className="min-w-0">
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Amount (₹)
               </label>
@@ -215,7 +216,7 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
                   const value = e.target.value
                   setFormData({ ...formData, amount: value })
                 }}
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full min-w-0 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="0.00"
                 required
                 min="0"
@@ -226,7 +227,7 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
             </div>
 
             {/* Volume Field */}
-            <div>
+            <div className="min-w-0">
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Volume (Litres)
               </label>
@@ -238,7 +239,7 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
                   const value = e.target.value
                   setFormData({ ...formData, volume: value })
                 }}
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full min-w-0 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="0.00"
                 required
                 min="0"
@@ -249,7 +250,7 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
             </div>
 
             {/* Cost Per Litre (Calculated) */}
-            <div>
+            <div className="min-w-0">
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Cost Per Litre (₹)
               </label>
@@ -257,19 +258,19 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
                 type="text"
                 value={costPerLitre}
                 disabled
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 cursor-not-allowed"
+                className="w-full min-w-0 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 cursor-not-allowed"
               />
             </div>
 
             {/* Fuel Type Dropdown */}
-            <div>
+            <div className="min-w-0">
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Fuel Type
               </label>
               <select
                 value={formData.fuelType}
                 onChange={(e) => setFormData({ ...formData, fuelType: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full min-w-0 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               >
                 <option value="PETROL">{toTitleCase('PETROL')}</option>
@@ -280,14 +281,14 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
             </div>
 
             {/* Payment Type Dropdown */}
-            <div>
+            <div className="min-w-0">
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Payment Type
               </label>
               <select
                 value={formData.paymentType}
                 onChange={(e) => setFormData({ ...formData, paymentType: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full min-w-0 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               >
                 <option value="UPI">{toTitleCase('UPI')}</option>
