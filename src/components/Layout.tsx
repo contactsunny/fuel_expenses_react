@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
 import { useFuelRecord } from "../contexts/FuelRecordContext";
 import FuelRecordForm from "./FuelRecordForm";
+import { getPreferences } from "../services/preferences";
 
 export default function Layout() {
   const [screenWidth, setScreenWidth] = useState<number>(
@@ -18,6 +19,12 @@ export default function Layout() {
   
   // Check if we're on an Analytics page
   const isAnalyticsPage = location.pathname.startsWith("/live/analytics");
+  const [analyticsMenuOpen, setAnalyticsMenuOpen] = useState(isAnalyticsPage);
+
+  // Update analytics menu open state when route changes
+  useEffect(() => {
+    setAnalyticsMenuOpen(isAnalyticsPage);
+  }, [isAnalyticsPage]);
   // Check if we're on the Records page
   const isRecordsPage = location.pathname === "/live/records" || location.pathname === "/live/dashboard";
 
@@ -145,6 +152,29 @@ export default function Layout() {
   const initialsColor = getUserInitialsColor(userName);
 
   const { showFuelForm, setShowFuelForm, editingRecord, setEditingRecord, triggerRefresh } = useFuelRecord();
+  const [defaultPreferences, setDefaultPreferences] = useState<{
+    defaultVehicleId?: string;
+    defaultFuelType?: string;
+    defaultPaymentType?: string;
+  }>({});
+
+  // Fetch preferences on mount
+  useEffect(() => {
+    getPreferences()
+      .then((res) => {
+        const preferences = res.data?.data ?? res.data ?? {};
+        setDefaultPreferences({
+          defaultVehicleId: preferences.defaultVehicleId ?? '',
+          defaultFuelType: preferences.defaultFuelType ?? '',
+          defaultPaymentType: preferences.defaultPaymentType ?? ''
+        });
+      })
+      .catch((err) => {
+        console.error('Error loading preferences:', err);
+        // Use empty defaults on error
+        setDefaultPreferences({});
+      });
+  }, []);
 
   const handleFuelFormSave = () => {
     // Trigger refresh instead of reloading the page
@@ -239,15 +269,31 @@ export default function Layout() {
               <span className="mr-2">📋</span>
               Records
             </NavLink>
-            <details open={isAnalyticsPage}>
+            <details 
+              open={analyticsMenuOpen}
+              onToggle={(e) => setAnalyticsMenuOpen((e.target as HTMLDetailsElement).open)}
+            >
               <summary className={`px-3 py-2 rounded-md cursor-pointer list-none ${
                 isAnalyticsPage 
                   ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" 
                   : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
               }`}>
-                <span className="flex items-center">
-                  <span className="mr-2">📊</span>
-                  Analytics
+                <span className="flex items-center justify-between w-full">
+                  <span className="flex items-center">
+                    <span className="mr-2">📊</span>
+                    Analytics
+                  </span>
+                  <svg 
+                    className="w-4 h-4 transition-transform duration-200" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                    style={{
+                      transform: analyticsMenuOpen ? 'rotate(90deg)' : 'rotate(0deg)'
+                    }}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </span>
               </summary>
               <div className="mt-1 ml-4 pl-4 border-l-2 border-slate-300 dark:border-slate-600 space-y-1">
@@ -321,6 +367,17 @@ export default function Layout() {
               Account
             </div>
             <NavLink
+              to="/live/settings"
+              className={({ isActive }: { isActive: boolean }) =>
+                `block px-3 py-2 rounded-md flex items-center ${
+                  isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
+                }`
+              }
+            >
+              <span className="mr-2">⚙️</span>
+              Settings
+            </NavLink>
+            <NavLink
               to="/live/profile"
               className={({ isActive }: { isActive: boolean }) =>
                 `block px-3 py-2 rounded-md flex items-center ${
@@ -383,6 +440,7 @@ export default function Layout() {
         }}
         onSave={handleFuelFormSave}
         record={editingRecord}
+        defaultPreferences={defaultPreferences}
       />
     </div>
   );

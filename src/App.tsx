@@ -4,6 +4,7 @@ import Login from './pages/Login'
 import Layout from './components/Layout'
 import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
+import Settings from './pages/Settings'
 import Vehicles from './pages/Vehicles'
 import Categories from './pages/Categories'
 import ServiceRecords from './pages/ServiceRecords'
@@ -35,6 +36,7 @@ export default function App() {
       >
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="records" element={<Dashboard />} />
+        <Route path="settings" element={<Settings />} />
         <Route path="profile" element={<Profile />} />
         <Route path="vehicles" element={<Vehicles />} />
         <Route path="categories" element={<Categories />} />

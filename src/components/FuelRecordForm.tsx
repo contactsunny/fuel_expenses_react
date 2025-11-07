@@ -2,15 +2,21 @@ import { useState, useEffect } from 'react'
 import { createFuel, updateFuel } from '../services/fuel'
 import { getUserVehicles } from '../services/vehicles'
 import { useTheme } from '../contexts/ThemeContext'
+import { toTitleCase } from '../utils/formatters'
 
 interface FuelRecordFormProps {
   isOpen: boolean
   onClose: () => void
   onSave: () => void
   record?: any // For edit mode
+  defaultPreferences?: {
+    defaultVehicleId?: string
+    defaultFuelType?: string
+    defaultPaymentType?: string
+  }
 }
 
-export default function FuelRecordForm({ isOpen, onClose, onSave, record }: FuelRecordFormProps) {
+export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaultPreferences }: FuelRecordFormProps) {
   const { theme } = useTheme()
   const [vehicles, setVehicles] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
@@ -50,18 +56,18 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record }: Fuel
           paymentType: record.paymentType ?? 'UPI'
         })
       } else {
-        // Reset form for create mode
+        // Reset form for create mode with default preferences
         setFormData({
           date: new Date().toISOString().split('T')[0],
-          vehicleId: '',
+          vehicleId: defaultPreferences?.defaultVehicleId ?? '',
           amount: '',
           volume: '',
-          fuelType: 'PETROL',
-          paymentType: 'UPI'
+          fuelType: defaultPreferences?.defaultFuelType ?? 'PETROL',
+          paymentType: defaultPreferences?.defaultPaymentType ?? 'UPI'
         })
       }
     }
-  }, [isOpen, record])
+  }, [isOpen, record, defaultPreferences])
 
   const costPerLitre = formData.amount && formData.volume && parseFloat(formData.volume) > 0
     ? (parseFloat(formData.amount) / parseFloat(formData.volume)).toFixed(2)
@@ -266,10 +272,10 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record }: Fuel
                 className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               >
-                <option value="PETROL">Petrol</option>
-                <option value="DIESEL">Diesel</option>
-                <option value="CNG">CNG</option>
-                <option value="EV">EV</option>
+                <option value="PETROL">{toTitleCase('PETROL')}</option>
+                <option value="DIESEL">{toTitleCase('DIESEL')}</option>
+                <option value="CNG">{toTitleCase('CNG')}</option>
+                <option value="EV">{toTitleCase('EV')}</option>
               </select>
             </div>
 
@@ -284,10 +290,10 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record }: Fuel
                 className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               >
-                <option value="UPI">UPI</option>
-                <option value="CASH">Cash</option>
-                <option value="CREDIT_CARD">Credit Card</option>
-                <option value="DEBIT_CARD">Debit Card</option>
+                <option value="UPI">{toTitleCase('UPI')}</option>
+                <option value="CASH">{toTitleCase('CASH')}</option>
+                <option value="CREDIT_CARD">{toTitleCase('CREDIT_CARD')}</option>
+                <option value="DEBIT_CARD">{toTitleCase('DEBIT_CARD')}</option>
               </select>
             </div>
 

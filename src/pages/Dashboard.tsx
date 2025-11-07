@@ -4,6 +4,7 @@ import { getUserVehicles } from '../services/vehicles'
 import { getUserVehicleCategories } from '../services/vehicleCategories'
 import { useFuelRecord } from '../contexts/FuelRecordContext'
 import DateRangePicker from '../components/DateRangePicker'
+import { toTitleCase } from '../utils/formatters'
 
 export default function Dashboard() {
   const [allRows, setAllRows] = useState<any[]>([]) // All fetched rows
@@ -27,14 +28,19 @@ export default function Dashboard() {
   const { setEditingRecord, setShowFuelForm, refreshTrigger, triggerRefresh } = useFuelRecord()
   const [showFiltersModal, setShowFiltersModal] = useState(false)
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
+
   const fmt = useMemo(() => new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: undefined }), [])
   const money = useMemo(() => new Intl.NumberFormat(undefined, { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }), [])
+  const moneyInteger = useMemo(() => new Intl.NumberFormat(undefined, { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }), [])
 
-  // Initialize default date range (3 months ago to today)
+  // Initialize default date range (6 months ago to today)
   useEffect(() => {
     const end = new Date()
     const start = new Date()
-    start.setMonth(end.getMonth() - 3)
+    start.setMonth(end.getMonth() - 6)
     
     setDateFrom(start.toISOString().split('T')[0])
     setDateTo(end.toISOString().split('T')[0])
@@ -180,7 +186,7 @@ export default function Dashboard() {
   const handleResetFilters = () => {
     const end = new Date()
     const start = new Date()
-    start.setMonth(end.getMonth() - 3)
+    start.setMonth(end.getMonth() - 6)
     
     setDateFrom(start.toISOString().split('T')[0])
     setDateTo(end.toISOString().split('T')[0])
@@ -188,6 +194,7 @@ export default function Dashboard() {
     setSelectedCategory('')
     setSelectedFuelType('')
     setSelectedPaymentType('')
+    setShowFiltersModal(false)
   }
 
   const isMobile = screenWidth < 768
@@ -219,6 +226,25 @@ export default function Dashboard() {
     }, 0)
   }, [rows])
 
+  // Calculate total litres for filtered rows
+  const totalLitres = useMemo(() => {
+    return rows.reduce((sum, r) => {
+      const litres = r.litres ?? r.liters ?? r.volume ?? r.quantity ?? 0
+      return sum + (typeof litres === 'number' ? litres : parseFloat(litres) || 0)
+    }, 0)
+  }, [rows])
+
+  // Pagination calculations
+  const totalPages = Math.ceil(rows.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedRows = rows.slice(startIndex, endIndex)
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [rows.length, itemsPerPage])
+
   // Format date range for display
   const formatDateRange = (start: string, end: string): string => {
     if (!start || !end) return ''
@@ -245,33 +271,40 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-3 flex-wrap">
-          <h2 className="text-lg font-semibold dark:text-slate-100">Records</h2>
+      <div className="flex items-center justify-between gap-2 md:gap-3 flex-nowrap overflow-hidden">
+        <div className="flex items-center gap-2 md:gap-3 flex-nowrap min-w-0 flex-1">
+          <h2 className="text-base md:text-lg font-semibold dark:text-slate-100 whitespace-nowrap flex-shrink-0">Records</h2>
           
           {/* Date Range Box */}
-          <div className="px-4 py-2 bg-blue-600 dark:bg-blue-700 rounded-lg">
-            <span className="text-sm font-medium text-blue-100 dark:text-blue-50">
+          <div className="px-2 py-1 md:px-4 md:py-2 bg-blue-600 dark:bg-blue-700 rounded-lg flex-shrink-0">
+            <span className="text-xs md:text-sm font-medium text-blue-100 dark:text-blue-50 whitespace-nowrap">
               {formatDateRange(dateFrom, dateTo)}
             </span>
           </div>
           
           {/* Total Amount Box */}
-          <div className="px-4 py-2 bg-blue-600 dark:bg-blue-700 rounded-lg">
-            <span className="text-sm font-medium text-blue-100 dark:text-blue-50">
-              {money.format(totalAmount)}
+          <div className="px-2 py-1 md:px-4 md:py-2 bg-blue-600 dark:bg-blue-700 rounded-lg flex-shrink-0">
+            <span className="text-xs md:text-sm font-medium text-blue-100 dark:text-blue-50 whitespace-nowrap">
+              {moneyInteger.format(Math.round(totalAmount))}
+            </span>
+          </div>
+          
+          {/* Total Litres Box */}
+          <div className="px-2 py-1 md:px-4 md:py-2 bg-blue-600 dark:bg-blue-700 rounded-lg flex-shrink-0">
+            <span className="text-xs md:text-sm font-medium text-blue-100 dark:text-blue-50 whitespace-nowrap">
+              {Math.round(totalLitres)} L
             </span>
           </div>
         </div>
         
         <button
           onClick={() => setShowFiltersModal(true)}
-          className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-2"
+          className="px-2 py-2 md:px-4 md:py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-2 flex-shrink-0"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
           </svg>
-          Filters
+          <span className="hidden md:inline">Filters</span>
         </button>
       </div>
 
@@ -351,7 +384,7 @@ export default function Dashboard() {
                   >
                     <option value="">All Fuel Types</option>
                     {fuelTypes.map((type) => (
-                      <option key={type} value={type}>{type}</option>
+                      <option key={type} value={type}>{toTitleCase(type)}</option>
                     ))}
                   </select>
                 </div>
@@ -366,7 +399,7 @@ export default function Dashboard() {
                   >
                     <option value="">All Payment Methods</option>
                     {paymentTypes.map((type) => (
-                      <option key={type} value={type}>{type.replace('_', ' ')}</option>
+                      <option key={type} value={type}>{toTitleCase(type)}</option>
                     ))}
                   </select>
                 </div>
@@ -400,10 +433,10 @@ export default function Dashboard() {
           <>
             {isMobile ? (
               <div className="divide-y divide-slate-200 dark:divide-slate-700">
-                {rows.length === 0 ? (
+                {paginatedRows.length === 0 ? (
                   <div className="py-6 text-slate-500 dark:text-slate-400 text-center">No records</div>
                 ) : (
-                  rows.map((r: any, idx: number) => {
+                  paginatedRows.map((r: any, idx: number) => {
                     const dateVal = r.date ?? r.createdAt ?? ''
                     const date = typeof dateVal === 'number' || /\d+/.test(dateVal) ? new Date(Number(dateVal)) : new Date(dateVal)
                     return (
@@ -411,7 +444,7 @@ export default function Dashboard() {
                         <div className="flex justify-between items-start mb-2">
                           <div className="font-medium text-slate-900 dark:text-slate-100">{isNaN(date.getTime()) ? '' : fmt.format(date)}</div>
                           <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-700 px-2 py-0.5 text-xs font-medium text-slate-700 dark:text-slate-300">{r.fuelType ?? r.type ?? ''}</span>
+                            <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-700 px-2 py-0.5 text-xs font-medium text-slate-700 dark:text-slate-300">{toTitleCase(r.fuelType ?? r.type ?? '')}</span>
                             <button
                               onClick={() => handleEdit(r)}
                               className="p-1.5 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors"
@@ -457,7 +490,7 @@ export default function Dashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                  {rows.map((r: any, idx: number) => {
+                  {paginatedRows.map((r: any, idx: number) => {
                     const dateVal = r.date ?? r.createdAt ?? ''
                     const date = typeof dateVal === 'number' || /\d+/.test(dateVal) ? new Date(Number(dateVal)) : new Date(dateVal)
                     return (
@@ -465,7 +498,7 @@ export default function Dashboard() {
                         <td className="py-3 pl-4 pr-4 whitespace-nowrap text-slate-900 dark:text-slate-100">{isNaN(date.getTime()) ? '' : fmt.format(date)}</td>
                         <td className="py-3 pr-4 text-slate-700 dark:text-slate-300">{r.vehicleName ?? r.vehicle ?? ''}</td>
                         <td className="py-3 pr-4 text-slate-700 dark:text-slate-300">{r.vehicleCategoryName ?? ''}</td>
-                        <td className="py-3 pr-4"><span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-700 px-2 py-0.5 text-xs font-medium text-slate-700 dark:text-slate-300">{r.fuelType ?? r.type ?? ''}</span></td>
+                        <td className="py-3 pr-4"><span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-700 px-2 py-0.5 text-xs font-medium text-slate-700 dark:text-slate-300">{toTitleCase(r.fuelType ?? r.type ?? '')}</span></td>
                         <td className="py-3 pr-4 text-slate-700 dark:text-slate-300">{r.litres ?? r.liters ?? r.volume ?? r.quantity ?? ''}</td>
                         <td className="py-3 pr-4 text-slate-700 dark:text-slate-300">{typeof r.price === 'number' || typeof r.amount === 'number' ? money.format(Number(r.price ?? r.amount)) : (r.price ?? r.amount ?? '')}</td>
                         <td className="py-3 pr-4">
@@ -493,13 +526,86 @@ export default function Dashboard() {
                       </tr>
                     )
                   })}
-                  {rows.length === 0 && (
+                  {paginatedRows.length === 0 && (
                     <tr>
                       <td className="py-6 text-slate-500 dark:text-slate-400 text-center" colSpan={7}>No records</td>
                     </tr>
                   )}
                 </tbody>
               </table>
+            )}
+
+            {/* Pagination Controls */}
+            {rows.length > 0 && (
+              <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-between flex-wrap gap-4">
+                {/* Left Section - Items Per Page */}
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-slate-700 dark:text-slate-300">Show:</span>
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) => {
+                      setItemsPerPage(Number(e.target.value))
+                      setCurrentPage(1)
+                    }}
+                    className="px-2 py-1 text-sm border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer"
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23666'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'right 0.5rem center',
+                      backgroundSize: '1em 1em',
+                      paddingRight: '2rem'
+                    }}
+                  >
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                  <span className="text-sm text-slate-700 dark:text-slate-300">of {rows.length} records</span>
+                </div>
+
+                {/* Right Section - Page Navigation */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                    className="p-1.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    aria-label="Previous page"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <span className="text-sm text-slate-700 dark:text-slate-300">Page</span>
+                  <select
+                    value={currentPage}
+                    onChange={(e) => setCurrentPage(Number(e.target.value))}
+                    className="px-2 py-1 text-sm border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer"
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23666'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'right 0.5rem center',
+                      backgroundSize: '1em 1em',
+                      paddingRight: '2rem'
+                    }}
+                  >
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <option key={page} value={page}>{page}</option>
+                    ))}
+                  </select>
+                  <span className="text-sm text-slate-700 dark:text-slate-300">of {totalPages}</span>
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                    className="p-1.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    aria-label="Next page"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
             )}
           </>
         )}
