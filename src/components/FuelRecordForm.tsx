@@ -155,9 +155,9 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-x-hidden" onClick={onClose}>
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto overflow-x-hidden mx-auto" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 'calc(100vw - 2rem)' }}>
-        <div className="p-4 sm:p-6 min-w-0" style={{ width: '100%', maxWidth: '100%' }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4 overflow-x-hidden" onClick={onClose}>
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto overflow-x-hidden mx-auto" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 'calc(100vw - 1rem)', width: 'calc(100vw - 1rem)' }}>
+        <div className="p-3 sm:p-6 min-w-0 overflow-x-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
           <h2 className="text-xl font-semibold dark:text-slate-100 mb-4">
             {record ? 'Edit Fuel Record' : 'Add Fuel Record'}
           </h2>
@@ -168,9 +168,9 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4 min-w-0">
+          <form onSubmit={handleSubmit} className="space-y-4 min-w-0 overflow-x-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
             {/* Date Field */}
-            <div className="min-w-0">
+            <div className="min-w-0 overflow-x-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Date
               </label>
@@ -178,12 +178,15 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
                 type="date"
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                className="w-full min-w-0 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full min-w-0 px-2 sm:px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                 style={{
                   colorScheme: theme === 'dark' ? 'dark' : 'light',
                   maxWidth: '100%',
                   width: '100%',
-                  boxSizing: 'border-box'
+                  boxSizing: 'border-box',
+                  minWidth: 0,
+                  WebkitAppearance: 'none',
+                  MozAppearance: 'textfield'
                 }}
                 required
                 autoComplete="off"
