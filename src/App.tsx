@@ -11,6 +11,7 @@ import Analytics from './pages/Analytics/Analytics'
 import AnalyticsVehicleCategory from './pages/Analytics/AnalyticsVehicleCategory'
 import AnalyticsFuelPrice from './pages/Analytics/AnalyticsFuelPrice'
 import AnalyticsFuelType from './pages/Analytics/AnalyticsFuelType'
+import { FuelRecordProvider } from './contexts/FuelRecordContext'
 
 function RequireAuth({ children }: { children: ReactElement }) {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
@@ -26,7 +27,9 @@ export default function App() {
         path="/live"
         element={
           <RequireAuth>
-            <Layout />
+            <FuelRecordProvider>
+              <Layout />
+            </FuelRecordProvider>
           </RequireAuth>
         }
       >

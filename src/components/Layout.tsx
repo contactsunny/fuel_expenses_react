@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
+import { useFuelRecord } from "../contexts/FuelRecordContext";
+import FuelRecordForm from "./FuelRecordForm";
 
 export default function Layout() {
   const [screenWidth, setScreenWidth] = useState<number>(
@@ -16,6 +18,8 @@ export default function Layout() {
   
   // Check if we're on an Analytics page
   const isAnalyticsPage = location.pathname.startsWith("/live/analytics");
+  // Check if we're on the Records page
+  const isRecordsPage = location.pathname === "/live/records" || location.pathname === "/live/dashboard";
 
   useEffect(() => {
     const onResize = () => {
@@ -139,6 +143,13 @@ export default function Layout() {
   const userName = userData?.name || 'User';
   const initials = getUserInitials(userName);
   const initialsColor = getUserInitialsColor(userName);
+
+  const { showFuelForm, setShowFuelForm, editingRecord, setEditingRecord, triggerRefresh } = useFuelRecord();
+
+  const handleFuelFormSave = () => {
+    // Trigger refresh instead of reloading the page
+    triggerRefresh();
+  };
 
   const logout = () => {
     localStorage.clear();
@@ -348,6 +359,31 @@ export default function Layout() {
           </main>
         </div>
       </div>
+
+      {/* FAB - Only show on Records page */}
+      {isRecordsPage && (
+        <button
+          onClick={() => {
+            setEditingRecord(null);
+            setShowFuelForm(true);
+          }}
+          className="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center text-2xl z-40 transition-colors"
+          aria-label="Add fuel record"
+        >
+          +
+        </button>
+      )}
+
+      {/* Fuel Record Form Modal */}
+      <FuelRecordForm
+        isOpen={showFuelForm}
+        onClose={() => {
+          setShowFuelForm(false);
+          setEditingRecord(null);
+        }}
+        onSave={handleFuelFormSave}
+        record={editingRecord}
+      />
     </div>
   );
 }
