@@ -186,6 +186,13 @@ export default function Layout() {
     navigate("/");
   };
 
+  // Close sidebar on mobile when navigation link is clicked
+  const handleNavClick = () => {
+    if (screenWidth < 768) {
+      setSidebarOpen(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 grid grid-rows-[auto_1fr]">
       <header className="sticky top-0 z-20 border-b border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-slate-800/60">
@@ -260,6 +267,7 @@ export default function Layout() {
             </div>
             <NavLink
               to="/live/records"
+              onClick={handleNavClick}
               className={({ isActive }: { isActive: boolean }) =>
                 `block px-3 py-2 rounded-md flex items-center ${
                   isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
@@ -299,6 +307,7 @@ export default function Layout() {
               <div className="mt-1 ml-4 pl-4 border-l-2 border-slate-300 dark:border-slate-600 space-y-1">
                 <NavLink
                   to="/live/analytics/vehicleCategory"
+                  onClick={handleNavClick}
                   className={({ isActive }: { isActive: boolean }) =>
                     `block px-3 py-2 rounded-md text-sm ${
                       isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-400"
@@ -309,6 +318,7 @@ export default function Layout() {
                 </NavLink>
                 <NavLink
                   to="/live/analytics/fuelPrice"
+                  onClick={handleNavClick}
                   className={({ isActive }: { isActive: boolean }) =>
                     `block px-3 py-2 rounded-md text-sm ${
                       isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-400"
@@ -319,6 +329,7 @@ export default function Layout() {
                 </NavLink>
                 <NavLink
                   to="/live/analytics/vsChart"
+                  onClick={handleNavClick}
                   className={({ isActive }: { isActive: boolean }) =>
                     `block px-3 py-2 rounded-md text-sm ${
                       isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-400"
@@ -331,6 +342,7 @@ export default function Layout() {
             </details>
             <NavLink
               to="/live/vehicles"
+              onClick={handleNavClick}
               className={({ isActive }: { isActive: boolean }) =>
                 `block px-3 py-2 rounded-md flex items-center ${
                   isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
@@ -342,6 +354,7 @@ export default function Layout() {
             </NavLink>
             <NavLink
               to="/live/categories"
+              onClick={handleNavClick}
               className={({ isActive }: { isActive: boolean }) =>
                 `block px-3 py-2 rounded-md flex items-center ${
                   isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
@@ -353,6 +366,7 @@ export default function Layout() {
             </NavLink>
             <NavLink
               to="/live/serviceRecords"
+              onClick={handleNavClick}
               className={({ isActive }: { isActive: boolean }) =>
                 `block px-3 py-2 rounded-md flex items-center ${
                   isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
@@ -368,6 +382,7 @@ export default function Layout() {
             </div>
             <NavLink
               to="/live/settings"
+              onClick={handleNavClick}
               className={({ isActive }: { isActive: boolean }) =>
                 `block px-3 py-2 rounded-md flex items-center ${
                   isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
@@ -379,6 +394,7 @@ export default function Layout() {
             </NavLink>
             <NavLink
               to="/live/profile"
+              onClick={handleNavClick}
               className={({ isActive }: { isActive: boolean }) =>
                 `block px-3 py-2 rounded-md flex items-center ${
                   isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
