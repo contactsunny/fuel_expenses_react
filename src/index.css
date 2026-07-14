@@ -1,11 +1,140 @@
 @import "tailwindcss";
 
 @theme {
+  --font-sans: "Inter Variable", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
   --color-brand: #0ea5e9;
   --color-brand-dark: #0284c7;
+
+  --color-background: var(--fe-background);
+  --color-foreground: var(--fe-foreground);
+  --color-surface: var(--fe-surface);
+  --color-surface-elevated: var(--fe-surface-elevated);
+  --color-muted: var(--fe-muted);
+  --color-muted-foreground: var(--fe-muted-foreground);
+  --color-border: var(--fe-border);
+  --color-border-subtle: var(--fe-border-subtle);
+  --color-accent: var(--fe-accent);
+  --color-accent-foreground: var(--fe-accent-foreground);
+  --color-accent-muted: var(--fe-accent-muted);
+  --color-danger: var(--fe-danger);
+  --color-danger-foreground: var(--fe-danger-foreground);
+  --color-danger-muted: var(--fe-danger-muted);
+  --color-success: var(--fe-success);
+  --color-ring: var(--fe-ring);
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* Light theme (default before .dark) — clean zinc */
+:root {
+  --fe-background: #f4f4f5;
+  --fe-foreground: #18181b;
+  --fe-surface: #ffffff;
+  --fe-surface-elevated: #ffffff;
+  --fe-muted: #f4f4f5;
+  --fe-muted-foreground: #71717a;
+  --fe-border: #e4e4e7;
+  --fe-border-subtle: #f4f4f5;
+  --fe-accent: #0ea5e9;
+  --fe-accent-foreground: #ffffff;
+  --fe-accent-muted: rgba(14, 165, 233, 0.12);
+  --fe-danger: #dc2626;
+  --fe-danger-foreground: #ffffff;
+  --fe-danger-muted: rgba(220, 38, 38, 0.1);
+  --fe-success: #16a34a;
+  --fe-ring: rgba(14, 165, 233, 0.4);
+  color-scheme: light;
+}
+
+/* GitHub / Linear-inspired dark — not pitch black */
+.dark {
+  --fe-background: #0f1419;
+  --fe-foreground: #e6edf3;
+  --fe-surface: #161b22;
+  --fe-surface-elevated: #1c2128;
+  --fe-muted: #21262d;
+  --fe-muted-foreground: #8b949e;
+  --fe-border: #30363d;
+  --fe-border-subtle: #21262d;
+  --fe-accent: #0ea5e9;
+  --fe-accent-foreground: #ffffff;
+  --fe-accent-muted: rgba(14, 165, 233, 0.15);
+  --fe-danger: #f85149;
+  --fe-danger-foreground: #ffffff;
+  --fe-danger-muted: rgba(248, 81, 73, 0.15);
+  --fe-success: #3fb950;
+  --fe-ring: rgba(14, 165, 233, 0.45);
+  color-scheme: dark;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--fe-border);
+  }
+
+  html {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  html.theme-transitioning,
+  html.theme-transitioning *,
+  html.theme-transitioning *::before,
+  html.theme-transitioning *::after {
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease,
+      box-shadow 0.2s ease,
+      fill 0.2s ease,
+      stroke 0.2s ease !important;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background-color: var(--fe-background);
+    color: var(--fe-foreground);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  #root {
+    min-height: 100dvh;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--fe-ring);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.theme-transitioning,
+    html.theme-transitioning *,
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
 
 @keyframes slide-up {
   from {
@@ -18,6 +147,63 @@
   }
 }
 
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 .animate-slide-up {
   animation: slide-up 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.15s ease-out;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.18s ease-out;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--fe-muted) 25%,
+    var(--fe-border-subtle) 50%,
+    var(--fe-muted) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-slide-up,
+  .animate-fade-in,
+  .animate-scale-in,
+  .animate-shimmer {
+    animation: none;
+  }
 }

@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { Fuel } from 'lucide-react'
+import { Card } from '../components/ui'
 
 declare global {
   interface Window {
@@ -58,17 +60,27 @@ export default function Login() {
   }, [])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-white p-6">
-      <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="text-center mb-6">
-          <div className="mx-auto w-12 h-12 rounded-xl bg-brand/10 text-brand flex items-center justify-center mb-3">⛽️</div>
-          <h1 className="text-xl font-semibold">Fuel Expenses</h1>
-          <p className="text-slate-500 text-sm">Sign in to continue</p>
+    <div className="min-h-dvh flex items-center justify-center p-6 relative overflow-hidden bg-background">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-60 dark:opacity-40"
+        style={{
+          background:
+            'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(14,165,233,0.18), transparent), radial-gradient(ellipse 60% 40% at 100% 100%, rgba(14,165,233,0.08), transparent)',
+        }}
+        aria-hidden
+      />
+      <Card className="relative w-full max-w-sm shadow-xl shadow-black/10 dark:shadow-black/40 border-border p-8 animate-scale-in" padding={false}>
+        <div className="p-8">
+          <div className="text-center mb-8">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-muted text-accent">
+              <Fuel className="h-6 w-6" aria-hidden />
+            </div>
+            <h1 className="text-xl font-semibold tracking-tight text-foreground">Fuel Expenses</h1>
+            <p className="mt-1.5 text-sm text-muted-foreground">Sign in to continue</p>
+          </div>
+          <div id="googleBtn" className="flex justify-center min-h-[44px]" />
         </div>
-        <div id="googleBtn" className="flex justify-center" />
-      </div>
+      </Card>
     </div>
   )
 }
-
-

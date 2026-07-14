@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { PageHeader, Card, PageLoading, EmptyState, Alert } from '../../components/ui'
 import { getFuelTypeAnalytics } from '../../services/analytics'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 
@@ -110,9 +111,9 @@ export default function AnalyticsFuelType() {
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg p-3">
-          <p className="font-medium text-slate-900 dark:text-slate-100 mb-1">{payload[0].name}</p>
-          <p className="text-sm text-slate-600 dark:text-slate-400">
+        <div className="bg-surface-elevated border border-border rounded-lg shadow-lg p-3">
+          <p className="font-medium text-foreground mb-1">{payload[0].name}</p>
+          <p className="text-sm text-muted-foreground">
             Total: <span className="font-semibold">{money.format(payload[0].value)}</span>
           </p>
         </div>
@@ -123,12 +124,12 @@ export default function AnalyticsFuelType() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold dark:text-slate-100">Fuel Type Analytics</h2>
-      <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 md:p-6">
-        {loading && <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading…</div>}
-        {error && <div className="p-8 text-center text-red-600 dark:text-red-400">{error}</div>}
+      <PageHeader title="Fuel Type Analytics" />
+      <Card padding={false} className="p-4 md:p-6">
+        {loading && <PageLoading label="Loading…" />}
+        {error && <Alert className="m-2">{error}</Alert>}
         {!loading && !error && chartData.length === 0 && (
-          <div className="p-8 text-center text-slate-500 dark:text-slate-400">No data available</div>
+          <EmptyState title="No data available" description="There is nothing to show for the last 6 months." />
         )}
         {!loading && !error && chartData.length > 0 && (
           <div className={isMobile ? "h-96" : "h-96 md:h-[500px]"}>
@@ -164,7 +165,7 @@ export default function AnalyticsFuelType() {
             </ResponsiveContainer>
           </div>
         )}
-      </div>
+      </Card>
     </div>
   )
 }

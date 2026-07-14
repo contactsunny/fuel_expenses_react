@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Plus, Pencil, Trash2, Tags } from 'lucide-react'
 import { getUserVehicleCategories, deleteVehicleCategory } from '../services/vehicleCategories'
 import CategoryForm from '../components/CategoryForm'
+import { Card, PageHeader, PageLoading, EmptyState, Alert, Dialog, DialogFooter, Button } from '../components/ui'
 
 export default function Categories() {
   const [rows, setRows] = useState<any[]>([])
@@ -102,135 +104,110 @@ export default function Categories() {
 
   const isMobile = screenWidth < 768
 
+  const actionButtons = (r: any) => (
+    <div className="flex items-center gap-2">
+      <button
+        onClick={() => handleEdit(r)}
+        className="p-1.5 text-accent hover:bg-accent-muted rounded-lg transition-colors"
+        aria-label="Edit category"
+      >
+        <Pencil className="w-4 h-4" />
+      </button>
+      <button
+        onClick={() => handleDelete(r)}
+        className="p-1.5 text-danger hover:bg-danger-muted rounded-lg transition-colors"
+        aria-label="Delete category"
+      >
+        <Trash2 className="w-4 h-4" />
+      </button>
+    </div>
+  )
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold dark:text-slate-100">Categories</h2>
-      </div>
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-0 overflow-hidden shadow-sm">
-        {loading && <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading…</div>}
-        {error && <div className="p-8 text-center text-red-600 dark:text-red-400">{error}</div>}
+      <PageHeader title="Categories" />
+
+      <Card padding={false} className="overflow-hidden">
+        {loading && <PageLoading />}
+        {error && (
+          <div className="p-4">
+            <Alert>{error}</Alert>
+          </div>
+        )}
         {!loading && !error && (
           <>
-            {isMobile ? (
-              <div className="divide-y divide-slate-200 dark:divide-slate-700">
-                {rows.length === 0 ? (
-                  <div className="py-6 text-slate-500 dark:text-slate-400 text-center">No categories</div>
-                ) : (
-                  rows.map((r: any, idx: number) => (
-                    <div key={idx} className="p-4 hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                      <div className="flex justify-between items-start mb-2">
-                        <div className="font-medium text-slate-900 dark:text-slate-100">
-                          {r.name ?? r.title ?? r.categoryName ?? 'Unnamed Category'}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleEdit(r)}
-                            className="p-1.5 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors"
-                            aria-label="Edit category"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
-                          </button>
-                          <button
-                            onClick={() => handleDelete(r)}
-                            className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
-                            aria-label="Delete category"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
-                        </div>
+            {rows.length === 0 ? (
+              <EmptyState icon={<Tags className="h-6 w-6" />} title="No categories" />
+            ) : isMobile ? (
+              <div className="divide-y divide-border">
+                {rows.map((r: any, idx: number) => (
+                  <div key={idx} className="p-4 hover:bg-muted/50 transition-colors">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="font-medium text-foreground">
+                        {r.name ?? r.title ?? r.categoryName ?? 'Unnamed Category'}
                       </div>
-                      {columns.filter(c => c.key !== 'name').map(col => {
-                        const val = getValue(r, col)
-                        return val ? (
-                          <div key={col.key} className="text-sm text-slate-600 dark:text-slate-400">
-                            {val}
-                          </div>
-                        ) : null
-                      })}
+                      {actionButtons(r)}
                     </div>
-                  ))
-                )}
+                    {columns.filter(c => c.key !== 'name').map(col => {
+                      const val = getValue(r, col)
+                      return val ? (
+                        <div key={col.key} className="text-sm text-muted-foreground">
+                          {val}
+                        </div>
+                      ) : null
+                    })}
+                  </div>
+                ))}
               </div>
             ) : (
               columns.length > 0 ? (
                 <table className="min-w-full text-sm">
-                  <thead className="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
-                    <tr className="text-left text-slate-600 dark:text-slate-300">
+                  <thead className="bg-muted border-b border-border">
+                    <tr className="text-left text-muted-foreground">
                       {columns.map(col => (
-                        <th key={col.key} className="py-3 pl-4 pr-4">{col.label}</th>
+                        <th key={col.key} className="py-3 pl-4 pr-4 font-medium">{col.label}</th>
                       ))}
-                      <th className="py-3 pr-4">Actions</th>
+                      <th className="py-3 pr-4 font-medium">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                  <tbody className="divide-y divide-border">
                     {rows.map((r: any, idx: number) => (
-                      <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                      <tr key={idx} className="hover:bg-muted/50 transition-colors">
                         {columns.map(col => (
-                          <td key={col.key} className="py-3 pl-4 pr-4 text-slate-700 dark:text-slate-300">
+                          <td key={col.key} className="py-3 pl-4 pr-4 text-muted-foreground">
                             {col.key === 'name' ? (
-                              <span className="font-medium text-slate-900 dark:text-slate-100">{getValue(r, col)}</span>
+                              <span className="font-medium text-foreground">{getValue(r, col)}</span>
                             ) : (
                               getValue(r, col)
                             )}
                           </td>
                         ))}
                         <td className="py-3 pr-4">
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => handleEdit(r)}
-                              className="p-1.5 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors"
-                              aria-label="Edit category"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                              </svg>
-                            </button>
-                            <button
-                              onClick={() => handleDelete(r)}
-                              className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
-                              aria-label="Delete category"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                          </div>
+                          {actionButtons(r)}
                         </td>
                       </tr>
                     ))}
-                    {rows.length === 0 && (
-                      <tr>
-                        <td className="py-6 text-slate-500 dark:text-slate-400 text-center" colSpan={columns.length + 1}>No categories</td>
-                      </tr>
-                    )}
                   </tbody>
                 </table>
               ) : (
-                <div className="py-6 text-slate-500 dark:text-slate-400 text-center">No categories</div>
+                <EmptyState icon={<Tags className="h-6 w-6" />} title="No categories" />
               )
             )}
           </>
         )}
-      </div>
+      </Card>
 
-      {/* FAB */}
       <button
         onClick={() => {
           setEditingCategory(null)
           setShowCategoryForm(true)
         }}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center text-2xl z-40 transition-colors"
+        className="fixed bottom-6 right-6 w-14 h-14 bg-accent hover:brightness-110 text-accent-foreground rounded-full shadow-lg flex items-center justify-center z-40 transition-colors"
         aria-label="Add category"
       >
-        +
+        <Plus className="w-6 h-6" />
       </button>
 
-      {/* Category Form Modal */}
       <CategoryForm
         isOpen={showCategoryForm}
         onClose={() => {
@@ -241,35 +218,36 @@ export default function Categories() {
         category={editingCategory}
       />
 
-      {/* Delete Confirmation Dialog */}
-      {deleteConfirm.show && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setDeleteConfirm({ show: false, category: null })}>
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-lg font-semibold dark:text-slate-100 mb-4">Confirm Delete</h3>
-            <p className="text-slate-600 dark:text-slate-400 mb-6">
-              Are you sure you want to delete this category? This action cannot be undone.
-            </p>
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => setDeleteConfirm({ show: false, category: null })}
-                className="flex-1 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-                disabled={deleting}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={confirmDelete}
-                disabled={deleting}
-                className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                {deleting ? 'Deleting...' : 'Delete'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <Dialog
+        open={deleteConfirm.show}
+        onClose={() => setDeleteConfirm({ show: false, category: null })}
+        title="Confirm Delete"
+        size="sm"
+      >
+        <p className="text-sm text-muted-foreground">
+          Are you sure you want to delete this category? This action cannot be undone.
+        </p>
+        <DialogFooter className="border-t-0 pt-2 mt-4">
+          <Button
+            type="button"
+            variant="outline"
+            className="flex-1"
+            onClick={() => setDeleteConfirm({ show: false, category: null })}
+            disabled={deleting}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            variant="danger"
+            className="flex-1"
+            onClick={confirmDelete}
+            disabled={deleting}
+          >
+            {deleting ? 'Deleting...' : 'Delete'}
+          </Button>
+        </DialogFooter>
+      </Dialog>
     </div>
   )
 }

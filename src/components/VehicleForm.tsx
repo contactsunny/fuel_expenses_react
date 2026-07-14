@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { createVehicle, updateVehicle } from '../services/vehicles'
 import { getUserVehicleCategories } from '../services/vehicleCategories'
+import { Button, Input, Select, Label, Alert, Dialog, DialogFooter } from './ui'
 
 interface VehicleFormProps {
   isOpen: boolean
@@ -98,100 +99,72 @@ export default function VehicleForm({ isOpen, onClose, onSave, vehicle }: Vehicl
     }
   }
 
-  if (!isOpen) return null
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto mx-auto" onClick={(e) => e.stopPropagation()}>
-        <div className="p-4 sm:p-6">
-          <h2 className="text-xl font-semibold dark:text-slate-100 mb-4">
-            {vehicle ? 'Edit Vehicle' : 'Add Vehicle'}
-          </h2>
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      title={vehicle ? 'Edit Vehicle' : 'Add Vehicle'}
+      size="sm"
+    >
+      {error && <Alert className="mb-4">{error}</Alert>}
 
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md text-red-600 dark:text-red-400 text-sm">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Name Field */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Vehicle Name *
-              </label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter vehicle name"
-                required
-                autoComplete="off"
-                data-lpignore="true"
-              />
-            </div>
-
-            {/* Category Dropdown */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Category
-              </label>
-              {loading ? (
-                <div className="px-3 py-2 text-slate-500 dark:text-slate-400">Loading categories...</div>
-              ) : (
-                <select
-                  value={formData.categoryId}
-                  onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select a category</option>
-                  {categories.map((cat) => {
-                    const id = String(cat.id ?? cat._id ?? cat.categoryId ?? '')
-                    const name = cat.name ?? cat.title ?? cat.categoryName ?? 'Unknown'
-                    return <option key={id} value={id}>{name}</option>
-                  })}
-                </select>
-              )}
-            </div>
-
-            {/* Registration Number Field */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Registration Number
-              </label>
-              <input
-                type="text"
-                value={formData.vehicleNumber}
-                onChange={(e) => setFormData({ ...formData, vehicleNumber: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter registration number"
-                autoComplete="off"
-                data-lpignore="true"
-              />
-            </div>
-
-            {/* Buttons */}
-            <div className="flex gap-3 pt-4">
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex-1 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={saving}
-                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                {saving ? 'Saving...' : 'Save'}
-              </button>
-            </div>
-          </form>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <Label htmlFor="vehicle-name">Vehicle Name *</Label>
+          <Input
+            id="vehicle-name"
+            type="text"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            placeholder="Enter vehicle name"
+            required
+            autoComplete="off"
+            data-lpignore="true"
+          />
         </div>
-      </div>
-    </div>
+
+        <div>
+          <Label htmlFor="vehicle-category">Category</Label>
+          {loading ? (
+            <div className="h-9 flex items-center text-sm text-muted-foreground">Loading categories...</div>
+          ) : (
+            <Select
+              id="vehicle-category"
+              value={formData.categoryId}
+              onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
+            >
+              <option value="">Select a category</option>
+              {categories.map((cat) => {
+                const id = String(cat.id ?? cat._id ?? cat.categoryId ?? '')
+                const name = cat.name ?? cat.title ?? cat.categoryName ?? 'Unknown'
+                return <option key={id} value={id}>{name}</option>
+              })}
+            </Select>
+          )}
+        </div>
+
+        <div>
+          <Label htmlFor="vehicle-number">Registration Number</Label>
+          <Input
+            id="vehicle-number"
+            type="text"
+            value={formData.vehicleNumber}
+            onChange={(e) => setFormData({ ...formData, vehicleNumber: e.target.value })}
+            placeholder="Enter registration number"
+            autoComplete="off"
+            data-lpignore="true"
+          />
+        </div>
+
+        <DialogFooter>
+          <Button type="button" variant="outline" className="flex-1" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" className="flex-1" disabled={saving}>
+            {saving ? 'Saving...' : 'Save'}
+          </Button>
+        </DialogFooter>
+      </form>
+    </Dialog>
   )
 }
-

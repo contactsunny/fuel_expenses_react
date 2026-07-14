@@ -166,28 +166,28 @@ export default function DateRangePicker({ startDate, endDate, onChange }: DateRa
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-3 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-left flex items-center justify-between"
+        className="w-full h-9 px-3 text-sm border border-border rounded-lg bg-surface text-foreground focus:outline-none focus:ring-2 focus:ring-ring text-left flex items-center justify-between hover:border-muted-foreground/40 transition-colors"
       >
         <span>
           {tempStart && tempEnd ? `${formatDate(tempStart)} - ${formatDate(tempEnd)}` : 'Select date range'}
         </span>
-        <svg className="w-4 h-4 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl p-4 w-80">
+        <div className="absolute z-50 mt-2 bg-surface-elevated border border-border rounded-xl shadow-xl shadow-black/20 p-4 w-80 animate-scale-in">
           <div className="mb-4">
             {/* Month/Year Navigation */}
             <div className="flex items-center justify-between mb-3">
               <button
                 type="button"
                 onClick={() => navigateMonth('prev')}
-                className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors"
+                className="p-1.5 hover:bg-muted rounded-lg transition-colors"
                 aria-label="Previous month"
               >
-                <svg className="w-5 h-5 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
@@ -199,7 +199,7 @@ export default function DateRangePicker({ startDate, endDate, onChange }: DateRa
                     setShowYearPicker(false)
                     setShowMonthPicker(!showMonthPicker)
                   }}
-                  className="px-3 py-1 text-sm font-semibold text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors"
+                  className="px-3 py-1 text-sm font-semibold text-foreground hover:bg-muted rounded-lg transition-colors"
                 >
                   {monthName}
                 </button>
@@ -209,7 +209,7 @@ export default function DateRangePicker({ startDate, endDate, onChange }: DateRa
                     setShowMonthPicker(false)
                     setShowYearPicker(!showYearPicker)
                   }}
-                  className="px-3 py-1 text-sm font-semibold text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors"
+                  className="px-3 py-1 text-sm font-semibold text-foreground hover:bg-muted rounded-lg transition-colors"
                 >
                   {year}
                 </button>
@@ -218,10 +218,10 @@ export default function DateRangePicker({ startDate, endDate, onChange }: DateRa
               <button
                 type="button"
                 onClick={() => navigateMonth('next')}
-                className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors"
+                className="p-1.5 hover:bg-muted rounded-lg transition-colors"
                 aria-label="Next month"
               >
-                <svg className="w-5 h-5 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
@@ -229,7 +229,7 @@ export default function DateRangePicker({ startDate, endDate, onChange }: DateRa
 
             {/* Month Picker */}
             {showMonthPicker && (
-              <div className="mb-3 p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+              <div className="mb-3 p-2 bg-muted rounded-lg">
                 <div className="grid grid-cols-3 gap-2">
                   {monthNames.map((month, idx) => (
                     <button
@@ -238,8 +238,8 @@ export default function DateRangePicker({ startDate, endDate, onChange }: DateRa
                       onClick={() => selectMonth(idx)}
                       className={`px-3 py-2 text-xs rounded transition-colors ${
                         idx === currentMonth.getMonth()
-                          ? 'bg-blue-600 text-white font-semibold'
-                          : 'hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300'
+                          ? 'bg-accent text-accent-foreground font-semibold'
+                          : 'hover:bg-border/60 text-muted-foreground'
                       }`}
                     >
                       {month.substring(0, 3)}
@@ -251,7 +251,7 @@ export default function DateRangePicker({ startDate, endDate, onChange }: DateRa
 
             {/* Year Picker */}
             {showYearPicker && (
-              <div className="mb-3 p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg max-h-48 overflow-y-auto">
+              <div className="mb-3 p-2 bg-muted rounded-lg max-h-48 overflow-y-auto">
                 <div className="grid grid-cols-4 gap-2">
                   {years.map((y) => (
                     <button
@@ -260,8 +260,8 @@ export default function DateRangePicker({ startDate, endDate, onChange }: DateRa
                       onClick={() => selectYear(y)}
                       className={`px-3 py-2 text-xs rounded transition-colors ${
                         y === currentMonth.getFullYear()
-                          ? 'bg-blue-600 text-white font-semibold'
-                          : 'hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300'
+                          ? 'bg-accent text-accent-foreground font-semibold'
+                          : 'hover:bg-border/60 text-muted-foreground'
                       }`}
                     >
                       {y}
@@ -273,7 +273,7 @@ export default function DateRangePicker({ startDate, endDate, onChange }: DateRa
 
             <div className="grid grid-cols-7 gap-1 mb-2">
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                <div key={day} className="text-xs font-medium text-slate-500 dark:text-slate-400 text-center py-1">
+                <div key={day} className="text-xs font-medium text-muted-foreground text-center py-1">
                   {day}
                 </div>
               ))}
@@ -297,12 +297,12 @@ export default function DateRangePicker({ startDate, endDate, onChange }: DateRa
                     className={`
                       h-8 text-xs rounded transition-colors
                       ${isStart || isEnd
-                        ? 'bg-blue-600 text-white font-semibold'
+                        ? 'bg-accent text-accent-foreground font-semibold'
                         : inRange
-                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-900 dark:text-blue-100'
-                        : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100'
+                        ? 'bg-accent-muted text-accent'
+                        : 'hover:bg-muted text-foreground'
                       }
-                      ${today && !isStart && !isEnd ? 'ring-1 ring-slate-400 dark:ring-slate-500' : ''}
+                      ${today && !isStart && !isEnd ? 'ring-1 ring-border' : ''}
                     `}
                   >
                     {date.getDate()}
@@ -311,18 +311,18 @@ export default function DateRangePicker({ startDate, endDate, onChange }: DateRa
               })}
             </div>
           </div>
-          <div className="flex gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+          <div className="flex gap-2 pt-2 border-t border-border">
             <button
               type="button"
               onClick={handleApply}
-              className="flex-1 px-3 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
+              className="flex-1 px-3 py-2 text-sm bg-accent hover:brightness-110 text-accent-foreground rounded-lg transition-colors font-medium"
             >
               Apply
             </button>
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="px-3 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-md text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              className="px-3 py-2 text-sm border border-border rounded-lg text-foreground hover:bg-muted transition-colors"
             >
               Cancel
             </button>

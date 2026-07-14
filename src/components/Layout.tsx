@@ -1,38 +1,70 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
+import {
+  Menu,
+  X,
+  Sun,
+  Moon,
+  Monitor,
+  ClipboardList,
+  ChartPie,
+  Car,
+  Tags,
+  Wrench,
+  Settings,
+  User,
+  LogOut,
+  Plus,
+  ChevronRight,
+} from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { useFuelRecord } from "../contexts/FuelRecordContext";
 import FuelRecordForm from "./FuelRecordForm";
 import { getPreferences } from "../services/preferences";
+import { cn } from "../utils/cn";
+import { Button } from "./ui";
+
+const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+  cn(
+    "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors duration-150",
+    isActive
+      ? "bg-accent-muted text-accent font-medium"
+      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+  );
+
+const subLinkClass = ({ isActive }: { isActive: boolean }) =>
+  cn(
+    "flex items-center rounded-lg px-3 py-1.5 text-sm transition-colors duration-150",
+    isActive
+      ? "bg-accent-muted text-accent font-medium"
+      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+  );
 
 export default function Layout() {
   const [screenWidth, setScreenWidth] = useState<number>(
     typeof window !== "undefined" ? window.innerWidth : 1024
   );
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(() => {
-    // Initialize sidebar state based on initial screen width
     return typeof window !== "undefined" ? window.innerWidth >= 768 : true;
   });
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
-  
-  // Check if we're on an Analytics page
+
   const isAnalyticsPage = location.pathname.startsWith("/live/analytics");
   const [analyticsMenuOpen, setAnalyticsMenuOpen] = useState(isAnalyticsPage);
 
-  // Update analytics menu open state when route changes
   useEffect(() => {
     setAnalyticsMenuOpen(isAnalyticsPage);
   }, [isAnalyticsPage]);
-  // Check if we're on the Records page
-  const isRecordsPage = location.pathname === "/live/records" || location.pathname === "/live/dashboard";
+
+  const isRecordsPage =
+    location.pathname === "/live/records" || location.pathname === "/live/dashboard";
 
   useEffect(() => {
     const onResize = () => {
       const newWidth = window.innerWidth;
       setScreenWidth(newWidth);
-      // Automatically show/hide sidebar based on screen width
       if (newWidth >= 768) {
         setSidebarOpen(true);
       } else {
@@ -53,15 +85,12 @@ export default function Layout() {
   };
 
   const getUserInitials = (name: string): string => {
-    if (!name) return 'U';
-    const parts = name.trim().split(/\s+/).filter(p => p.length > 0);
-    if (parts.length === 0) return 'U';
+    if (!name) return "U";
+    const parts = name.trim().split(/\s+/).filter((p) => p.length > 0);
+    if (parts.length === 0) return "U";
     if (parts.length === 1) return parts[0][0].toUpperCase();
-    // For multiple words, take first letter of first word and first letter of last word
-    // But if there's a middle initial (single letter), use that instead
     const first = parts[0][0];
     const last = parts[parts.length - 1][0];
-    // If there's a middle part that's a single letter, use that
     if (parts.length === 3 && parts[1].length === 1) {
       return (first + parts[1]).toUpperCase();
     }
@@ -70,8 +99,14 @@ export default function Layout() {
 
   const getUserInitialsColor = (name: string): string => {
     const colors = [
-      'bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-pink-500',
-      'bg-indigo-500', 'bg-yellow-500', 'bg-red-500', 'bg-teal-500'
+      "bg-blue-500",
+      "bg-emerald-500",
+      "bg-violet-500",
+      "bg-pink-500",
+      "bg-indigo-500",
+      "bg-amber-500",
+      "bg-red-500",
+      "bg-teal-500",
     ];
     if (!name) return colors[0];
     let hash = 0;
@@ -83,14 +118,19 @@ export default function Layout() {
 
   const userData = getUserData();
   const [userImage, setUserImage] = useState<string>(() => {
-    // Check for cached image first
-    const cachedImage = localStorage.getItem(`user_image_${userData?.id || userData?.email || ''}`);
+    const cachedImage = localStorage.getItem(`user_image_${userData?.id || userData?.email || ""}`);
     if (cachedImage) {
       return cachedImage;
     }
-    
-    const imageUrl = userData?.imageUrl || userData?.image || userData?.picture || userData?.photoURL || userData?.image_url || '';
-    return imageUrl && imageUrl.trim() !== '' ? imageUrl : '';
+
+    const imageUrl =
+      userData?.imageUrl ||
+      userData?.image ||
+      userData?.picture ||
+      userData?.photoURL ||
+      userData?.image_url ||
+      "";
+    return imageUrl && imageUrl.trim() !== "" ? imageUrl : "";
   });
 
   const [showFallback, setShowFallback] = useState(false);
@@ -99,85 +139,75 @@ export default function Layout() {
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     const img = e.currentTarget;
     const currentSrc = img.src;
-    
-    // If it's a Google image that failed, try retrying a few times
-    // This handles 429 rate limiting errors
-    if (currentSrc.includes('googleusercontent.com') && retryCount < 3) {
-      setRetryCount(prev => prev + 1);
-      // Try again after a delay, using the original URL
+
+    if (currentSrc.includes("googleusercontent.com") && retryCount < 3) {
+      setRetryCount((prev) => prev + 1);
       setTimeout(() => {
         const userObj = getUserData();
-        const originalUrl = userObj?.imageUrl || userObj?.image || userObj?.picture || '';
+        const originalUrl = userObj?.imageUrl || userObj?.image || userObj?.picture || "";
         if (originalUrl) {
           setUserImage(originalUrl);
         }
-      }, 2000 * retryCount); // Exponential backoff
+      }, 2000 * retryCount);
       return;
     }
-    
-    // Final fallback - show initials
+
     setShowFallback(true);
   };
 
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     setShowFallback(false);
-    
-    // Cache the image as data URL when it successfully loads
+
     const img = e.currentTarget;
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
     if (ctx && img.complete && img.naturalWidth > 0) {
       try {
         canvas.width = img.naturalWidth;
         canvas.height = img.naturalHeight;
         ctx.drawImage(img, 0, 0);
-        const dataUrl = canvas.toDataURL('image/png');
-        
-        // Cache the image in localStorage
-        const cacheKey = `user_image_${userData?.id || userData?.email || ''}`;
+        const dataUrl = canvas.toDataURL("image/png");
+
+        const cacheKey = `user_image_${userData?.id || userData?.email || ""}`;
         localStorage.setItem(cacheKey, dataUrl);
-        
-        // Update the image source to use cached version
+
         setUserImage(dataUrl);
       } catch (err) {
-        // If canvas operations fail (CORS), just continue with original URL
-        console.warn('Could not cache image:', err);
+        console.warn("Could not cache image:", err);
       }
     }
   };
 
-  const userName = userData?.name || 'User';
+  const userName = userData?.name || "User";
   const initials = getUserInitials(userName);
   const initialsColor = getUserInitialsColor(userName);
 
-  const { showFuelForm, setShowFuelForm, editingRecord, setEditingRecord, triggerRefresh } = useFuelRecord();
+  const { showFuelForm, setShowFuelForm, editingRecord, setEditingRecord, triggerRefresh } =
+    useFuelRecord();
   const [defaultPreferences, setDefaultPreferences] = useState<{
     defaultVehicleId?: string;
     defaultFuelType?: string;
     defaultPaymentType?: string;
   }>({});
 
-  // Fetch preferences on mount
   useEffect(() => {
     getPreferences()
       .then((res) => {
         const preferences = res.data?.data ?? res.data ?? {};
         setDefaultPreferences({
-          defaultVehicleId: preferences.defaultVehicleId ?? '',
-          defaultFuelType: preferences.defaultFuelType ?? '',
-          defaultPaymentType: preferences.defaultPaymentType ?? ''
+          defaultVehicleId: preferences.defaultVehicleId ?? "",
+          defaultFuelType: preferences.defaultFuelType ?? "",
+          defaultPaymentType: preferences.defaultPaymentType ?? "",
         });
       })
       .catch((err) => {
-        console.error('Error loading preferences:', err);
-        // Use empty defaults on error
+        console.error("Error loading preferences:", err);
         setDefaultPreferences({});
       });
   }, []);
 
   const handleFuelFormSave = () => {
-    // Trigger refresh instead of reloading the page
     triggerRefresh();
   };
 
@@ -186,51 +216,69 @@ export default function Layout() {
     navigate("/");
   };
 
-  // Close sidebar on mobile when navigation link is clicked
   const handleNavClick = () => {
     if (screenWidth < 768) {
       setSidebarOpen(false);
     }
   };
 
+  const ThemeIcon = theme === "light" ? Sun : theme === "dark" ? Moon : Monitor;
+  const themeLabel =
+    theme === "light" ? "Light theme" : theme === "dark" ? "Dark theme" : "System theme";
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 grid grid-rows-[auto_1fr]">
-      <header className="sticky top-0 z-20 border-b border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-slate-800/60">
-        <div className="h-14 px-4 flex items-center justify-between w-full">
-          <div className="flex items-center gap-3">
-            <button
-              className="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700"
+    <div className="min-h-dvh bg-background text-foreground grid grid-rows-[auto_1fr]">
+      <header className="sticky top-0 z-20 border-b border-border bg-surface/80 backdrop-blur-xl supports-[backdrop-filter]:bg-surface/70">
+        <div className="h-14 px-3 md:px-4 flex items-center justify-between w-full">
+          <div className="flex items-center gap-2.5">
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={(e) => {
                 e.stopPropagation();
                 setSidebarOpen((v) => !v);
               }}
-              aria-label="Toggle navigation"
+              aria-label={sidebarOpen ? "Close navigation" : "Open navigation"}
+              aria-expanded={sidebarOpen}
             >
-              <span className="text-xl">☰</span>
-            </button>
-            <div className="font-semibold tracking-tight dark:text-slate-100">Fuel Expenses</div>
+              {sidebarOpen && screenWidth < 768 ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+            </Button>
+            <div className="flex items-center gap-2">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent-muted text-accent">
+                <ClipboardList className="h-3.5 w-3.5" />
+              </div>
+              <span className="font-semibold tracking-tight text-foreground text-sm md:text-base">
+                Fuel Expenses
+              </span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button
+          <div className="flex items-center gap-1.5">
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 toggleTheme();
               }}
-              className="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-              aria-label="Toggle theme"
-              type="button"
+              aria-label={`Theme: ${themeLabel}. Click to cycle.`}
+              title={themeLabel}
             >
-              <span className="text-lg" role="img" aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
-                {theme === 'dark' ? '☀️' : '🌙'}
-              </span>
-            </button>
+              <ThemeIcon className="h-4.5 w-4.5 h-4 w-4" />
+            </Button>
             <button
               onClick={() => navigate("/live/profile")}
-              className="w-8 h-8 rounded-full overflow-hidden hover:ring-2 ring-slate-300 dark:ring-slate-600"
+              className="ml-1 w-8 h-8 rounded-full overflow-hidden ring-1 ring-border hover:ring-2 hover:ring-accent/40 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label="Open profile"
             >
               {showFallback || !userImage ? (
-                <div className={`w-8 h-8 rounded-full ${initialsColor} flex items-center justify-center text-white font-semibold text-xs`}>
+                <div
+                  className={`w-8 h-8 rounded-full ${initialsColor} flex items-center justify-center text-white font-semibold text-xs`}
+                >
                   {initials}
                 </div>
               ) : (
@@ -238,7 +286,7 @@ export default function Layout() {
                   key={`${userImage}-${retryCount}`}
                   className="w-8 h-8 object-cover"
                   src={userImage}
-                  alt="profile"
+                  alt=""
                   onError={handleImageError}
                   onLoad={handleImageLoad}
                   loading="lazy"
@@ -251,177 +299,115 @@ export default function Layout() {
 
       {sidebarOpen && screenWidth < 768 && (
         <div
-          className="fixed inset-0 bg-black/50 z-10 md:hidden"
+          className="fixed inset-0 bg-black/50 z-10 md:hidden animate-fade-in"
           onClick={() => setSidebarOpen(false)}
+          aria-hidden
         />
       )}
       <aside
-        className={
-          "border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 fixed inset-y-0 left-0 top-14 z-20 w-64 overflow-y-auto h-[calc(100vh-3.5rem)] transition-transform duration-300 " +
-          (sidebarOpen ? "translate-x-0" : "-translate-x-full")
-        }
+        className={cn(
+          "border-r border-border bg-surface fixed inset-y-0 left-0 top-14 z-20 w-64 overflow-y-auto h-[calc(100dvh-3.5rem)] transition-transform duration-300 ease-out",
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+        aria-label="Main navigation"
       >
-          <nav className="p-2 space-y-1">
-            <div className="px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
-              Navigation
+        <nav className="p-3 space-y-0.5">
+          <div className="px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Navigation
+          </div>
+          <NavLink to="/live/records" onClick={handleNavClick} className={navLinkClass}>
+            <ClipboardList className="h-4 w-4 shrink-0" aria-hidden />
+            Records
+          </NavLink>
+          <details
+            open={analyticsMenuOpen}
+            onToggle={(e) => setAnalyticsMenuOpen((e.target as HTMLDetailsElement).open)}
+          >
+            <summary
+              className={cn(
+                "px-3 py-2 rounded-lg cursor-pointer list-none flex items-center justify-between text-sm transition-colors",
+                isAnalyticsPage
+                  ? "bg-accent-muted text-accent font-medium"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+            >
+              <span className="flex items-center gap-2.5">
+                <ChartPie className="h-4 w-4 shrink-0" aria-hidden />
+                Analytics
+              </span>
+              <ChevronRight
+                className={cn(
+                  "h-4 w-4 transition-transform duration-200",
+                  analyticsMenuOpen && "rotate-90"
+                )}
+                aria-hidden
+              />
+            </summary>
+            <div className="mt-0.5 ml-4 pl-3 border-l border-border space-y-0.5">
+              <NavLink
+                to="/live/analytics/vehicleCategory"
+                onClick={handleNavClick}
+                className={subLinkClass}
+              >
+                Vehicle Category
+              </NavLink>
+              <NavLink
+                to="/live/analytics/fuelPrice"
+                onClick={handleNavClick}
+                className={subLinkClass}
+              >
+                Fuel Price
+              </NavLink>
+              <NavLink to="/live/analytics/vsChart" onClick={handleNavClick} className={subLinkClass}>
+                Fuel Type
+              </NavLink>
             </div>
-            <NavLink
-              to="/live/records"
-              onClick={handleNavClick}
-              className={({ isActive }: { isActive: boolean }) =>
-                `block px-3 py-2 rounded-md flex items-center ${
-                  isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
-                }`
-              }
-            >
-              <span className="mr-2">📋</span>
-              Records
-            </NavLink>
-            <details 
-              open={analyticsMenuOpen}
-              onToggle={(e) => setAnalyticsMenuOpen((e.target as HTMLDetailsElement).open)}
-            >
-              <summary className={`px-3 py-2 rounded-md cursor-pointer list-none ${
-                isAnalyticsPage 
-                  ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" 
-                  : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
-              }`}>
-                <span className="flex items-center justify-between w-full">
-                  <span className="flex items-center">
-                    <span className="mr-2">📊</span>
-                    Analytics
-                  </span>
-                  <svg 
-                    className="w-4 h-4 transition-transform duration-200" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                    style={{
-                      transform: analyticsMenuOpen ? 'rotate(90deg)' : 'rotate(0deg)'
-                    }}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </span>
-              </summary>
-              <div className="mt-1 ml-4 pl-4 border-l-2 border-slate-300 dark:border-slate-600 space-y-1">
-                <NavLink
-                  to="/live/analytics/vehicleCategory"
-                  onClick={handleNavClick}
-                  className={({ isActive }: { isActive: boolean }) =>
-                    `block px-3 py-2 rounded-md text-sm ${
-                      isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-400"
-                    }`
-                  }
-                >
-                  • Vehicle Category
-                </NavLink>
-                <NavLink
-                  to="/live/analytics/fuelPrice"
-                  onClick={handleNavClick}
-                  className={({ isActive }: { isActive: boolean }) =>
-                    `block px-3 py-2 rounded-md text-sm ${
-                      isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-400"
-                    }`
-                  }
-                >
-                  • Fuel Price
-                </NavLink>
-                <NavLink
-                  to="/live/analytics/vsChart"
-                  onClick={handleNavClick}
-                  className={({ isActive }: { isActive: boolean }) =>
-                    `block px-3 py-2 rounded-md text-sm ${
-                      isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-400"
-                    }`
-                  }
-                >
-                  • Fuel Type
-                </NavLink>
-              </div>
-            </details>
-            <NavLink
-              to="/live/vehicles"
-              onClick={handleNavClick}
-              className={({ isActive }: { isActive: boolean }) =>
-                `block px-3 py-2 rounded-md flex items-center ${
-                  isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
-                }`
-              }
-            >
-              <span className="mr-2">🚗</span>
-              Vehicles
-            </NavLink>
-            <NavLink
-              to="/live/categories"
-              onClick={handleNavClick}
-              className={({ isActive }: { isActive: boolean }) =>
-                `block px-3 py-2 rounded-md flex items-center ${
-                  isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
-                }`
-              }
-            >
-              <span className="mr-2">🏷️</span>
-              Categories
-            </NavLink>
-            <NavLink
-              to="/live/serviceRecords"
-              onClick={handleNavClick}
-              className={({ isActive }: { isActive: boolean }) =>
-                `block px-3 py-2 rounded-md flex items-center ${
-                  isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
-                }`
-              }
-            >
-              <span className="mr-2">🔧</span>
-              Service Records
-            </NavLink>
+          </details>
+          <NavLink to="/live/vehicles" onClick={handleNavClick} className={navLinkClass}>
+            <Car className="h-4 w-4 shrink-0" aria-hidden />
+            Vehicles
+          </NavLink>
+          <NavLink to="/live/categories" onClick={handleNavClick} className={navLinkClass}>
+            <Tags className="h-4 w-4 shrink-0" aria-hidden />
+            Categories
+          </NavLink>
+          <NavLink to="/live/serviceRecords" onClick={handleNavClick} className={navLinkClass}>
+            <Wrench className="h-4 w-4 shrink-0" aria-hidden />
+            Service Records
+          </NavLink>
 
-            <div className="mt-4 border-t border-slate-200 dark:border-slate-700 pt-3 text-xs font-semibold text-slate-500 dark:text-slate-400">
-              Account
-            </div>
-            <NavLink
-              to="/live/settings"
-              onClick={handleNavClick}
-              className={({ isActive }: { isActive: boolean }) =>
-                `block px-3 py-2 rounded-md flex items-center ${
-                  isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
-                }`
-              }
-            >
-              <span className="mr-2">⚙️</span>
-              Settings
-            </NavLink>
-            <NavLink
-              to="/live/profile"
-              onClick={handleNavClick}
-              className={({ isActive }: { isActive: boolean }) =>
-                `block px-3 py-2 rounded-md flex items-center ${
-                  isActive ? "bg-blue-100 dark:bg-slate-700 text-blue-900 dark:text-slate-100 font-medium border-l-2 border-blue-500 dark:border-blue-400" : "hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300"
-                }`
-              }
-            >
-              <span className="mr-2">👤</span>
-              Profile
-            </NavLink>
-            <button
-              onClick={logout}
-              className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300 flex items-center"
-            >
-              <span className="mr-2">🚪</span>
-              Logout
-            </button>
-          </nav>
-        </aside>
+          <div className="mt-4 pt-3 border-t border-border px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Account
+          </div>
+          <NavLink to="/live/settings" onClick={handleNavClick} className={navLinkClass}>
+            <Settings className="h-4 w-4 shrink-0" aria-hidden />
+            Settings
+          </NavLink>
+          <NavLink to="/live/profile" onClick={handleNavClick} className={navLinkClass}>
+            <User className="h-4 w-4 shrink-0" aria-hidden />
+            Profile
+          </NavLink>
+          <button
+            onClick={logout}
+            className="w-full flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+          >
+            <LogOut className="h-4 w-4 shrink-0" aria-hidden />
+            Logout
+          </button>
+        </nav>
+      </aside>
 
       <div className="max-w-screen-2xl mx-auto w-full">
-        <div className={sidebarOpen ? "md:ml-64" : "md:ml-0"} style={{ transition: 'margin-left 0.3s' }}>
-          <main className="p-4 md:p-6">
+        <div
+          className={sidebarOpen ? "md:ml-64" : "md:ml-0"}
+          style={{ transition: "margin-left 0.3s" }}
+        >
+          <main className="p-4 md:p-6 animate-fade-in">
             <Outlet />
-            <footer className="mt-10 text-center text-sm text-slate-500 dark:text-slate-400">
+            <footer className="mt-12 pb-4 text-center text-xs text-muted-foreground">
               © {new Date().getFullYear()}{" "}
               <a
-                className="underline"
+                className="underline underline-offset-2 hover:text-foreground transition-colors"
                 href="https://blog.contactsunny.com"
                 target="_blank"
                 rel="noreferrer"
@@ -433,21 +419,19 @@ export default function Layout() {
         </div>
       </div>
 
-      {/* FAB - Only show on Records page */}
       {isRecordsPage && (
         <button
           onClick={() => {
             setEditingRecord(null);
             setShowFuelForm(true);
           }}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center text-2xl z-40 transition-colors"
+          className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-lg shadow-accent/30 hover:brightness-110 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           aria-label="Add fuel record"
         >
-          +
+          <Plus className="h-6 w-6" />
         </button>
       )}
 
-      {/* Fuel Record Form Modal */}
       <FuelRecordForm
         isOpen={showFuelForm}
         onClose={() => {

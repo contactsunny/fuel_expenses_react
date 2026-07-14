@@ -5,11 +5,27 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Fuel Expenses" />
-    <meta name="theme-color" content="#0ea5e9" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f1419" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f4f4f5" media="(prefers-color-scheme: light)" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Track vehicle fuel expenses, vehicles, and analytics." />
     <title>Fuel Expenses</title>
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var preference = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
+          var dark =
+            preference === 'dark' ||
+            (preference === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.classList.toggle('dark', dark);
+          document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

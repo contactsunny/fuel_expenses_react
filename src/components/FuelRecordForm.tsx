@@ -3,12 +3,13 @@ import { createFuel, updateFuel } from '../services/fuel'
 import { getUserVehicles } from '../services/vehicles'
 import { useTheme } from '../contexts/ThemeContext'
 import { toTitleCase } from '../utils/formatters'
+import { Button, Input, Select, Label, Alert, Dialog, DialogFooter } from './ui'
 
 interface FuelRecordFormProps {
   isOpen: boolean
   onClose: () => void
   onSave: () => void
-  record?: any // For edit mode
+  record?: any
   defaultPreferences?: {
     defaultVehicleId?: string
     defaultFuelType?: string
@@ -17,7 +18,7 @@ interface FuelRecordFormProps {
 }
 
 export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaultPreferences }: FuelRecordFormProps) {
-  const { theme } = useTheme()
+  const { resolvedTheme } = useTheme()
   const [vehicles, setVehicles] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -34,10 +35,8 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
 
   useEffect(() => {
     if (isOpen) {
-      // Prevent body scroll when modal is open
       document.body.style.overflow = 'hidden'
-      
-      // Load vehicles when modal opens
+
       setLoading(true)
       getUserVehicles()
         .then((res) => {
@@ -48,7 +47,6 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
         .catch(() => setError('Failed to load vehicles'))
         .finally(() => setLoading(false))
 
-      // If editing, populate form with record data
       if (record) {
         setFormData({
           date: record.date ? new Date(record.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
@@ -59,7 +57,6 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
           paymentType: record.paymentType ?? 'UPI'
         })
       } else {
-        // Reset form for create mode with default preferences
         setFormData({
           date: new Date().toISOString().split('T')[0],
           vehicleId: defaultPreferences?.defaultVehicleId ?? '',
@@ -70,11 +67,9 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
         })
       }
     } else {
-      // Restore body scroll when modal is closed
       document.body.style.overflow = ''
     }
 
-    // Cleanup: restore body scroll when component unmounts
     return () => {
       document.body.style.overflow = ''
     }
@@ -90,7 +85,6 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
     setSaving(true)
 
     try {
-      // Validate required fields
       if (!formData.vehicleId) {
         setError('Please select a vehicle')
         setSaving(false)
@@ -112,8 +106,7 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
       const amount = parseFloat(formData.amount)
       const litres = parseFloat(formData.volume)
       const costPerLitre = litres > 0 ? (amount / litres).toFixed(2) : '0.00'
-      
-      // Format date as ISO string
+
       const date = new Date(formData.date)
       if (isNaN(date.getTime())) {
         setError('Please enter a valid date')
@@ -134,10 +127,8 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
 
       const recordId = record?.id ?? record?._id
       if (recordId) {
-        // Update mode
         await updateFuel(String(recordId), payload)
       } else {
-        // Create mode
         await createFuel(payload)
       }
 
@@ -152,189 +143,130 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
     }
   }
 
-  if (!isOpen) return null
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4 overflow-x-hidden" onClick={onClose}>
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto overflow-x-hidden mx-auto" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 'calc(100vw - 1rem)', width: 'calc(100vw - 1rem)' }}>
-        <div className="p-3 sm:p-6 min-w-0 overflow-x-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
-          <h2 className="text-xl font-semibold dark:text-slate-100 mb-4">
-            {record ? 'Edit Fuel Record' : 'Add Fuel Record'}
-          </h2>
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      title={record ? 'Edit Fuel Record' : 'Add Fuel Record'}
+      size="sm"
+    >
+      {error && <Alert className="mb-4">{error}</Alert>}
 
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md text-red-600 dark:text-red-400 text-sm">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4 min-w-0 overflow-x-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
-            {/* Date Field */}
-            <div className="min-w-0 overflow-x-hidden" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Date
-              </label>
-              <input
-                type="date"
-                value={formData.date}
-                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                className="w-full min-w-0 px-2 sm:px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                style={{
-                  colorScheme: theme === 'dark' ? 'dark' : 'light',
-                  maxWidth: '100%',
-                  width: '100%',
-                  boxSizing: 'border-box',
-                  minWidth: 0,
-                  WebkitAppearance: 'none',
-                  MozAppearance: 'textfield'
-                }}
-                required
-                autoComplete="off"
-                data-lpignore="true"
-                data-form-type="other"
-              />
-            </div>
-
-            {/* Vehicle Dropdown */}
-            <div className="min-w-0">
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Vehicle
-              </label>
-              {loading ? (
-                <div className="px-3 py-2 text-slate-500 dark:text-slate-400">Loading vehicles...</div>
-              ) : (
-                <select
-                  value={formData.vehicleId}
-                  onChange={(e) => setFormData({ ...formData, vehicleId: e.target.value })}
-                  className="w-full min-w-0 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                >
-                  <option value="">Select a vehicle</option>
-                  {vehicles.map((vehicle) => (
-                    <option key={vehicle.id ?? vehicle._id} value={vehicle.id ?? vehicle._id}>
-                      {vehicle.name ?? vehicle.vehicleName ?? 'Unknown'}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </div>
-
-            {/* Amount Field */}
-            <div className="min-w-0">
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Amount (₹)
-              </label>
-              <input
-                type="number"
-                step="any"
-                value={formData.amount}
-                onChange={(e) => {
-                  const value = e.target.value
-                  setFormData({ ...formData, amount: value })
-                }}
-                className="w-full min-w-0 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="0.00"
-                required
-                min="0"
-                autoComplete="off"
-                data-lpignore="true"
-                data-form-type="other"
-              />
-            </div>
-
-            {/* Volume Field */}
-            <div className="min-w-0">
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Volume (Litres)
-              </label>
-              <input
-                type="number"
-                step="any"
-                value={formData.volume}
-                onChange={(e) => {
-                  const value = e.target.value
-                  setFormData({ ...formData, volume: value })
-                }}
-                className="w-full min-w-0 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="0.00"
-                required
-                min="0"
-                autoComplete="off"
-                data-lpignore="true"
-                data-form-type="other"
-              />
-            </div>
-
-            {/* Cost Per Litre (Calculated) */}
-            <div className="min-w-0">
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Cost Per Litre (₹)
-              </label>
-              <input
-                type="text"
-                value={costPerLitre}
-                disabled
-                className="w-full min-w-0 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 cursor-not-allowed"
-              />
-            </div>
-
-            {/* Fuel Type Dropdown */}
-            <div className="min-w-0">
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Fuel Type
-              </label>
-              <select
-                value={formData.fuelType}
-                onChange={(e) => setFormData({ ...formData, fuelType: e.target.value })}
-                className="w-full min-w-0 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              >
-                <option value="PETROL">{toTitleCase('PETROL')}</option>
-                <option value="DIESEL">{toTitleCase('DIESEL')}</option>
-                <option value="CNG">{toTitleCase('CNG')}</option>
-                <option value="EV">{toTitleCase('EV')}</option>
-              </select>
-            </div>
-
-            {/* Payment Type Dropdown */}
-            <div className="min-w-0">
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Payment Type
-              </label>
-              <select
-                value={formData.paymentType}
-                onChange={(e) => setFormData({ ...formData, paymentType: e.target.value })}
-                className="w-full min-w-0 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              >
-                <option value="UPI">{toTitleCase('UPI')}</option>
-                <option value="CASH">{toTitleCase('CASH')}</option>
-                <option value="CREDIT_CARD">{toTitleCase('CREDIT_CARD')}</option>
-                <option value="DEBIT_CARD">{toTitleCase('DEBIT_CARD')}</option>
-              </select>
-            </div>
-
-            {/* Buttons */}
-            <div className="flex gap-3 pt-4">
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex-1 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={saving}
-                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                {saving ? 'Saving...' : 'Save'}
-              </button>
-            </div>
-          </form>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <Label htmlFor="fuel-date">Date</Label>
+          <Input
+            id="fuel-date"
+            type="date"
+            value={formData.date}
+            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+            style={{ colorScheme: resolvedTheme }}
+            required
+            autoComplete="off"
+            data-lpignore="true"
+            data-form-type="other"
+          />
         </div>
-      </div>
-    </div>
+
+        <div>
+          <Label htmlFor="fuel-vehicle">Vehicle</Label>
+          {loading ? (
+            <div className="h-9 flex items-center text-sm text-muted-foreground">Loading vehicles...</div>
+          ) : (
+            <Select
+              id="fuel-vehicle"
+              value={formData.vehicleId}
+              onChange={(e) => setFormData({ ...formData, vehicleId: e.target.value })}
+              required
+            >
+              <option value="">Select a vehicle</option>
+              {vehicles.map((vehicle) => (
+                <option key={vehicle.id ?? vehicle._id} value={vehicle.id ?? vehicle._id}>
+                  {vehicle.name ?? vehicle.vehicleName ?? 'Unknown'}
+                </option>
+              ))}
+            </Select>
+          )}
+        </div>
+
+        <div>
+          <Label htmlFor="fuel-amount">Amount (₹)</Label>
+          <Input
+            id="fuel-amount"
+            type="number"
+            step="any"
+            value={formData.amount}
+            onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+            placeholder="0.00"
+            required
+            min="0"
+            autoComplete="off"
+            data-lpignore="true"
+            data-form-type="other"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="fuel-volume">Volume (Litres)</Label>
+          <Input
+            id="fuel-volume"
+            type="number"
+            step="any"
+            value={formData.volume}
+            onChange={(e) => setFormData({ ...formData, volume: e.target.value })}
+            placeholder="0.00"
+            required
+            min="0"
+            autoComplete="off"
+            data-lpignore="true"
+            data-form-type="other"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="fuel-cpl">Cost Per Litre (₹)</Label>
+          <Input id="fuel-cpl" type="text" value={costPerLitre} disabled className="bg-muted text-muted-foreground" />
+        </div>
+
+        <div>
+          <Label htmlFor="fuel-type">Fuel Type</Label>
+          <Select
+            id="fuel-type"
+            value={formData.fuelType}
+            onChange={(e) => setFormData({ ...formData, fuelType: e.target.value })}
+            required
+          >
+            <option value="PETROL">{toTitleCase('PETROL')}</option>
+            <option value="DIESEL">{toTitleCase('DIESEL')}</option>
+            <option value="CNG">{toTitleCase('CNG')}</option>
+            <option value="EV">{toTitleCase('EV')}</option>
+          </Select>
+        </div>
+
+        <div>
+          <Label htmlFor="fuel-payment">Payment Type</Label>
+          <Select
+            id="fuel-payment"
+            value={formData.paymentType}
+            onChange={(e) => setFormData({ ...formData, paymentType: e.target.value })}
+            required
+          >
+            <option value="UPI">{toTitleCase('UPI')}</option>
+            <option value="CASH">{toTitleCase('CASH')}</option>
+            <option value="CREDIT_CARD">{toTitleCase('CREDIT_CARD')}</option>
+            <option value="DEBIT_CARD">{toTitleCase('DEBIT_CARD')}</option>
+          </Select>
+        </div>
+
+        <DialogFooter>
+          <Button type="button" variant="outline" className="flex-1" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" className="flex-1" disabled={saving}>
+            {saving ? 'Saving...' : 'Save'}
+          </Button>
+        </DialogFooter>
+      </form>
+    </Dialog>
   )
 }
-

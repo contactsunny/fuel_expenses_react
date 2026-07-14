@@ -1,10 +1,17 @@
+import { ChartPie } from 'lucide-react'
+import { PageHeader, Card, EmptyState } from '../../components/ui'
+
 export default function Analytics() {
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold">Analytics</h2>
-      <div className="rounded-xl border border-slate-200 p-4">Choose an analytics view from the sidebar.</div>
+      <PageHeader title="Analytics" description="Explore spend insights across your fleet." />
+      <Card padding={false}>
+        <EmptyState
+          icon={<ChartPie className="h-5 w-5" />}
+          title="Choose a view"
+          description="Pick an analytics view from the sidebar to get started."
+        />
+      </Card>
     </div>
   )
 }
-
-

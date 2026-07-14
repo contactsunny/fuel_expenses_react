@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { PageHeader, Card, PageLoading, EmptyState, Alert } from '../../components/ui'
 import { getFuelPriceAnalytics } from '../../services/analytics'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts'
 
@@ -179,17 +180,17 @@ export default function AnalyticsFuelPrice() {
     if (active && payload && payload.length) {
       const data = payload[0].payload
       return (
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg p-3">
-          <p className="font-medium text-slate-900 dark:text-slate-100 mb-2">{data.date}</p>
+        <div className="bg-surface-elevated border border-border rounded-lg shadow-lg p-3">
+          <p className="font-medium text-foreground mb-2">{data.date}</p>
           <div className="space-y-1 text-sm">
             {data.petrol !== null && data.petrol !== undefined && (
-              <p className="text-slate-600 dark:text-slate-400">
-                Petrol: <span className="font-semibold text-slate-900 dark:text-slate-100">{money.format(data.petrol)}</span>
+              <p className="text-muted-foreground">
+                Petrol: <span className="font-semibold text-foreground">{money.format(data.petrol)}</span>
               </p>
             )}
             {data.diesel !== null && data.diesel !== undefined && (
-              <p className="text-slate-600 dark:text-slate-400">
-                Diesel: <span className="font-semibold text-slate-900 dark:text-slate-100">{money.format(data.diesel)}</span>
+              <p className="text-muted-foreground">
+                Diesel: <span className="font-semibold text-foreground">{money.format(data.diesel)}</span>
               </p>
             )}
           </div>
@@ -201,12 +202,12 @@ export default function AnalyticsFuelPrice() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold dark:text-slate-100">Fuel Price Analytics</h2>
-      <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 md:p-6">
-        {loading && <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading…</div>}
-        {error && <div className="p-8 text-center text-red-600 dark:text-red-400">{error}</div>}
+      <PageHeader title="Fuel Price Analytics" />
+      <Card padding={false} className="p-4 md:p-6">
+        {loading && <PageLoading label="Loading…" />}
+        {error && <Alert className="m-2">{error}</Alert>}
         {!loading && !error && data.length === 0 && (
-          <div className="p-8 text-center text-slate-500 dark:text-slate-400">No data available</div>
+          <EmptyState title="No data available" description="There is nothing to show for the last 6 months." />
         )}
         {!loading && !error && data.length > 0 && (
           <div className={isMobile ? "h-80" : "h-96 md:h-[500px]"}>
@@ -222,22 +223,20 @@ export default function AnalyticsFuelPrice() {
                     <stop offset="95%" stopColor="#22c55e" stopOpacity={0.1}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#30363d" strokeOpacity={0.5} />
                 <XAxis 
                   dataKey="date" 
                   interval={isMobile ? Math.max(0, Math.floor(data.length / 6)) : 0}
                   angle={isMobile ? -45 : 0}
                   textAnchor={isMobile ? "end" : "middle"}
                   height={isMobile ? 60 : 30}
-                  tick={{ fontSize: isMobile ? 9 : 11 }}
-                  stroke="#64748b"
-                  className="dark:stroke-slate-400"
+                  tick={{ fontSize: isMobile ? 9 : 11, fill: '#8b949e' }}
+                  stroke="#8b949e"
                 />
                 <YAxis 
                   domain={yAxisDomain}
-                  tick={{ fontSize: isMobile ? 10 : 12 }}
-                  stroke="#64748b"
-                  className="dark:stroke-slate-400"
+                  tick={{ fontSize: isMobile ? 10 : 12, fill: '#8b949e' }}
+                  stroke="#8b949e"
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend 
@@ -266,7 +265,7 @@ export default function AnalyticsFuelPrice() {
             </ResponsiveContainer>
           </div>
         )}
-      </div>
+      </Card>
     </div>
   )
 }
