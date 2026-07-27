@@ -228,7 +228,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-dvh bg-background text-foreground grid grid-rows-[auto_1fr]">
-      <header className="sticky top-0 z-20 border-b border-border bg-surface/80 backdrop-blur-xl supports-[backdrop-filter]:bg-surface/70">
+      <header className="sticky top-0 z-20 border-b border-border bg-surface/80 backdrop-blur-xl supports-[backdrop-filter]:bg-surface/70 pt-[env(safe-area-inset-top,0px)]">
         <div className="h-14 px-3 md:px-4 flex items-center justify-between w-full">
           <div className="flex items-center gap-2.5">
             <Button
@@ -310,7 +310,7 @@ export default function Layout() {
       )}
       <aside
         className={cn(
-          "border-r border-border bg-surface fixed inset-y-0 left-0 top-14 z-20 w-64 overflow-y-auto h-[calc(100dvh-3.5rem)] transition-transform duration-300 ease-out",
+          "border-r border-border bg-surface fixed left-0 z-20 w-64 overflow-y-auto transition-transform duration-300 ease-out top-[var(--header-offset)] h-[calc(100dvh-var(--header-offset))] pb-[env(safe-area-inset-bottom,0px)]",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
         aria-label="Main navigation"
@@ -406,7 +406,7 @@ export default function Layout() {
           className={sidebarOpen ? "md:ml-64" : "md:ml-0"}
           style={{ transition: "margin-left 0.3s" }}
         >
-          <main className="p-4 md:p-6 animate-fade-in">
+          <main className="p-4 md:p-6 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] md:pb-6 animate-fade-in">
             <Outlet />
             <footer className="mt-12 pb-4 text-center text-xs text-muted-foreground">
               © {new Date().getFullYear()}{" "}
@@ -429,7 +429,7 @@ export default function Layout() {
             setEditingRecord(null);
             setShowFuelForm(true);
           }}
-          className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-lg shadow-accent/30 hover:brightness-110 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className="fixed z-40 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-lg shadow-accent/30 hover:brightness-110 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] right-[calc(1.5rem+env(safe-area-inset-right,0px))]"
           aria-label="Add fuel record"
         >
           <Plus className="h-6 w-6" />

@@ -59,7 +59,7 @@ export default function Login() {
   }, [])
 
   return (
-    <div className="min-h-dvh flex items-center justify-center p-6 relative overflow-hidden bg-background">
+    <div className="min-h-dvh flex items-center justify-center p-6 pt-[max(1.5rem,env(safe-area-inset-top,0px))] pb-[max(1.5rem,env(safe-area-inset-bottom,0px))] relative overflow-hidden bg-background">
       <div
         className="pointer-events-none absolute inset-0 opacity-60 dark:opacity-40"
         style={{

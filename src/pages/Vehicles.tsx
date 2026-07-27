@@ -191,7 +191,7 @@ export default function Vehicles() {
           setEditingVehicle(null)
           setShowVehicleForm(true)
         }}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-accent hover:brightness-110 text-accent-foreground rounded-full shadow-lg flex items-center justify-center z-40 transition-colors"
+        className="fixed z-40 w-14 h-14 bg-accent hover:brightness-110 text-accent-foreground rounded-full shadow-lg flex items-center justify-center transition-colors bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] right-[calc(1.5rem+env(safe-area-inset-right,0px))]"
         aria-label="Add vehicle"
       >
         <Plus className="w-6 h-6" />

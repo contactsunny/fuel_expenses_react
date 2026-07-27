@@ -71,7 +71,7 @@ export default function InstallPrompt() {
   }
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-sm z-50 animate-slide-up">
+    <div className="fixed z-50 animate-slide-up bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] left-[calc(1rem+env(safe-area-inset-left,0px))] right-[calc(1rem+env(safe-area-inset-right,0px))] md:left-auto md:right-[calc(1rem+env(safe-area-inset-right,0px))] md:max-w-sm">
       <div className="rounded-2xl border border-border bg-surface-elevated shadow-xl shadow-black/20 p-4 flex items-start gap-3">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-muted text-accent">
           <Smartphone className="h-5 w-5" aria-hidden />
