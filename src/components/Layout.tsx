@@ -248,9 +248,13 @@ export default function Layout() {
               )}
             </Button>
             <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent-muted text-accent">
-                <ClipboardList className="h-3.5 w-3.5" />
-              </div>
+              <img
+                src="/favicon.svg"
+                alt=""
+                className="h-7 w-7 rounded-lg shadow-sm ring-1 ring-border/60"
+                width={28}
+                height={28}
+              />
               <span className="font-semibold tracking-tight text-foreground text-sm md:text-base">
                 Fuel Expenses
               </span>

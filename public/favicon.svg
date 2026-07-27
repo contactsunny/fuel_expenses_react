@@ -1,39 +1,40 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Fuel Expenses">
   <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#0284c7;stop-opacity:1" />
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
     </linearGradient>
   </defs>
-  <!-- Background rounded square -->
-  <rect x="4" y="4" width="92" height="92" rx="20" fill="url(#grad)"/>
-  
-  <!-- Car (simple, recognizable side view) -->
-  <!-- Car body (main shape) -->
-  <path d="M 18 52 L 18 80 L 22 84 L 28 84 L 32 80 L 36 80 L 40 84 L 52 84 L 56 80 L 60 80 L 64 84 L 70 84 L 74 80 L 74 52 L 70 46 L 66 42 L 60 40 L 50 40 L 40 40 L 34 42 L 30 46 Z" fill="white" opacity="0.95"/>
-  
-  <!-- Front hood -->
-  <rect x="18" y="52" width="12" height="8" fill="white" opacity="0.95"/>
-  
-  <!-- Windshield (angled) -->
-  <path d="M 30 46 L 30 52 L 34 50 L 40 48 L 40 46 Z" fill="url(#grad)" opacity="0.25"/>
-  
-  <!-- Front window -->
-  <rect x="40" y="46" width="12" height="10" rx="1.5" fill="url(#grad)" opacity="0.25"/>
-  
-  <!-- Rear window -->
-  <rect x="54" y="46" width="12" height="10" rx="1.5" fill="url(#grad)" opacity="0.25"/>
-  
-  <!-- Rear section -->
-  <rect x="66" y="46" width="8" height="8" fill="white" opacity="0.95"/>
-  
-  <!-- Wheel wells (cutouts) -->
-  <ellipse cx="30" cy="80" rx="6" ry="4" fill="url(#grad)" opacity="0.95"/>
-  <ellipse cx="66" cy="80" rx="6" ry="4" fill="url(#grad)" opacity="0.95"/>
-  
-  <!-- Wheels (in wheel wells) -->
-  <circle cx="30" cy="80" r="5" fill="url(#grad)" opacity="0.35"/>
-  <circle cx="66" cy="80" r="5" fill="url(#grad)" opacity="0.35"/>
-  <circle cx="30" cy="80" r="3.5" fill="white" opacity="0.7"/>
-  <circle cx="66" cy="80" r="3.5" fill="white" opacity="0.7"/>
+
+  <!-- App tile -->
+  <rect x="4" y="4" width="92" height="92" rx="22" fill="url(#bg)"/>
+
+  <!-- Pump body -->
+  <rect x="26" y="28" width="34" height="48" rx="6" fill="#fff"/>
+
+  <!-- Display window -->
+  <rect x="32" y="34" width="22" height="14" rx="3" fill="#0284c7" opacity="0.85"/>
+
+  <!-- Gauge bars -->
+  <rect x="35" y="38" width="10" height="2.5" rx="1.25" fill="#fff" opacity="0.9"/>
+  <rect x="35" y="42.5" width="16" height="2.5" rx="1.25" fill="#fff" opacity="0.55"/>
+
+  <!-- Nozzle hose -->
+  <path
+    d="M60 36 C72 36, 76 44, 76 52 C76 60, 72 64, 68 64"
+    fill="none"
+    stroke="#fff"
+    stroke-width="5"
+    stroke-linecap="round"
+  />
+
+  <!-- Nozzle tip -->
+  <path
+    d="M68 64 L62 70 L58 67 L64 61 Z"
+    fill="#fff"
+  />
+
+  <!-- Base / stand -->
+  <rect x="30" y="72" width="26" height="6" rx="2" fill="#fff"/>
+  <rect x="34" y="78" width="18" height="4" rx="2" fill="#fff" opacity="0.9"/>
 </svg>

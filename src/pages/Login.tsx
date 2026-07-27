@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { Fuel } from 'lucide-react'
 import { Card } from '../components/ui'
 
 declare global {
@@ -72,9 +71,13 @@ export default function Login() {
       <Card className="relative w-full max-w-sm shadow-xl shadow-black/10 dark:shadow-black/40 border-border p-8 animate-scale-in" padding={false}>
         <div className="p-8">
           <div className="text-center mb-8">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-muted text-accent">
-              <Fuel className="h-6 w-6" aria-hidden />
-            </div>
+            <img
+              src="/favicon.svg"
+              alt=""
+              className="mx-auto mb-4 h-12 w-12 rounded-2xl shadow-sm ring-1 ring-border/60"
+              width={48}
+              height={48}
+            />
             <h1 className="text-xl font-semibold tracking-tight text-foreground">Fuel Expenses</h1>
             <p className="mt-1.5 text-sm text-muted-foreground">Sign in to continue</p>
           </div>
