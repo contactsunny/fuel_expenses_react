@@ -12,9 +12,9 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClass: Record<Variant, string> = {
   primary:
-    'bg-accent text-accent-foreground hover:brightness-110 shadow-sm shadow-accent/20 disabled:opacity-50',
+    'bg-accent text-accent-foreground hover:brightness-105 shadow-sm shadow-accent/20 disabled:opacity-50',
   secondary:
-    'bg-muted text-foreground hover:bg-border/60 disabled:opacity-50',
+    'bg-muted text-foreground hover:bg-border/70 disabled:opacity-50',
   ghost:
     'bg-transparent text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-50',
   danger:
@@ -24,10 +24,10 @@ const variantClass: Record<Variant, string> = {
 }
 
 const sizeClass: Record<Size, string> = {
-  sm: 'h-8 px-3 text-xs gap-1.5 rounded-lg',
-  md: 'h-9 px-3.5 text-sm gap-2 rounded-lg',
-  lg: 'h-10 px-4 text-sm gap-2 rounded-xl',
-  icon: 'h-9 w-9 rounded-lg inline-flex items-center justify-center',
+  sm: 'h-8 px-3 text-xs gap-1.5 rounded-md',
+  md: 'h-9 px-3.5 text-sm gap-2 rounded-md',
+  lg: 'h-10 px-4 text-sm gap-2 rounded-lg',
+  icon: 'h-9 w-9 rounded-md inline-flex items-center justify-center',
 }
 
 export function Button({
@@ -42,7 +42,7 @@ export function Button({
     <button
       type={type}
       className={cn(
-        'inline-flex items-center justify-center font-medium transition-colors duration-150',
+        'inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors duration-150',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
         'disabled:cursor-not-allowed',
         variantClass[variant],

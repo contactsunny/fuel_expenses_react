@@ -1,13 +1,13 @@
 import type { InputHTMLAttributes } from 'react'
 import { cn } from '../../utils/cn'
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}
+type InputProps = InputHTMLAttributes<HTMLInputElement>
 
 export function Input({ className, ...props }: InputProps) {
   return (
     <input
       className={cn(
-        'w-full min-w-0 h-9 px-3 text-sm rounded-lg',
+        'w-full min-w-0 h-10 px-3 text-sm rounded-md md:h-9',
         'bg-surface border border-border text-foreground placeholder:text-muted-foreground',
         'hover:border-muted-foreground/40',
         'focus:outline-none focus:ring-2 focus:ring-ring focus:border-accent',

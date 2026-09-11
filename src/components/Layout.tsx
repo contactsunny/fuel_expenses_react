@@ -26,17 +26,25 @@ import { Button } from "./ui";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
-    "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors duration-150",
+    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors duration-150",
     isActive
-      ? "bg-accent-muted text-accent font-medium"
+      ? "bg-accent text-accent-foreground font-semibold shadow-sm shadow-accent/20"
       : "text-muted-foreground hover:bg-muted hover:text-foreground"
   );
 
 const subLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
-    "flex items-center rounded-lg px-3 py-1.5 text-sm transition-colors duration-150",
+    "flex items-center rounded-md px-3 py-2 text-sm transition-colors duration-150",
     isActive
       ? "bg-accent-muted text-accent font-medium"
+      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+  );
+
+const bottomNavLinkClass = ({ isActive }: { isActive: boolean }) =>
+  cn(
+    "relative flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-[11px] font-medium transition-colors",
+    isActive
+      ? "bg-accent-muted text-accent"
       : "text-muted-foreground hover:bg-muted hover:text-foreground"
   );
 
@@ -225,11 +233,18 @@ export default function Layout() {
   const ThemeIcon = theme === "light" ? Sun : theme === "dark" ? Moon : Monitor;
   const themeLabel =
     theme === "light" ? "Light theme" : theme === "dark" ? "Dark theme" : "System theme";
+  const bottomNavItems = [
+    { to: "/live/records", label: "Records", icon: ClipboardList },
+    { to: "/live/analytics", label: "Analytics", icon: ChartPie },
+    { to: "/live/vehicles", label: "Vehicles", icon: Car },
+    { to: "/live/categories", label: "Categories", icon: Tags },
+    { to: "/live/settings", label: "Settings", icon: Settings },
+  ];
 
   return (
     <div className="min-h-dvh bg-background text-foreground grid grid-rows-[auto_1fr]">
-      <header className="sticky top-0 z-20 border-b border-border bg-surface/80 backdrop-blur-xl supports-[backdrop-filter]:bg-surface/70 pt-[env(safe-area-inset-top,0px)]">
-        <div className="h-14 px-3 md:px-4 flex items-center justify-between w-full">
+      <header className="sticky top-0 z-30 border-b border-border bg-surface/85 backdrop-blur-xl supports-[backdrop-filter]:bg-surface/75 pt-[env(safe-area-inset-top,0px)]">
+        <div className="h-14 px-3 md:px-6 flex items-center justify-between w-full">
           <div className="flex items-center gap-2.5">
             <Button
               variant="ghost"
@@ -251,7 +266,7 @@ export default function Layout() {
               <img
                 src="/favicon.svg"
                 alt=""
-                className="h-7 w-7 rounded-lg shadow-sm ring-1 ring-border/60"
+                className="h-7 w-7 rounded-md shadow-sm ring-1 ring-border/60"
                 width={28}
                 height={28}
               />
@@ -310,13 +325,18 @@ export default function Layout() {
       )}
       <aside
         className={cn(
-          "border-r border-border bg-surface fixed left-0 z-20 w-64 overflow-y-auto transition-transform duration-300 ease-out top-[var(--header-offset)] h-[calc(100dvh-var(--header-offset))] pb-[env(safe-area-inset-bottom,0px)]",
+          "border-r border-border bg-surface/95 backdrop-blur-xl fixed left-0 z-20 w-72 overflow-y-auto transition-transform duration-300 ease-out top-[var(--header-offset)] h-[calc(100dvh-var(--header-offset))] pb-[env(safe-area-inset-bottom,0px)] md:w-72",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
         aria-label="Main navigation"
       >
-        <nav className="p-3 space-y-0.5">
-          <div className="px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <nav className="p-4 space-y-1">
+          <div className="mb-4 rounded-xl bg-muted p-4">
+            <p className="text-xs font-semibold uppercase text-muted-foreground">Workspace</p>
+            <p className="mt-1 truncate text-sm font-semibold text-foreground">{userName}</p>
+            <p className="truncate text-xs text-muted-foreground">{userData?.email || "Fuel log"}</p>
+          </div>
+          <div className="px-3 py-2 text-[11px] font-semibold uppercase text-muted-foreground">
             Navigation
           </div>
           <NavLink to="/live/records" onClick={handleNavClick} className={navLinkClass}>
@@ -329,9 +349,9 @@ export default function Layout() {
           >
             <summary
               className={cn(
-                "px-3 py-2 rounded-lg cursor-pointer list-none flex items-center justify-between text-sm transition-colors",
+                "px-3 py-2.5 rounded-lg cursor-pointer list-none flex items-center justify-between text-sm transition-colors",
                 isAnalyticsPage
-                  ? "bg-accent-muted text-accent font-medium"
+                  ? "bg-accent text-accent-foreground font-semibold shadow-sm shadow-accent/20"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
@@ -403,12 +423,12 @@ export default function Layout() {
 
       <div className="max-w-screen-2xl mx-auto w-full">
         <div
-          className={sidebarOpen ? "md:ml-64" : "md:ml-0"}
+          className={sidebarOpen ? "md:ml-72" : "md:ml-0"}
           style={{ transition: "margin-left 0.3s" }}
         >
-          <main className="p-4 md:p-6 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] md:pb-6 animate-fade-in">
+          <main className="px-3 py-4 md:p-8 pb-[calc(6rem+env(safe-area-inset-bottom,0px))] md:pb-8 animate-fade-in">
             <Outlet />
-            <footer className="mt-12 pb-4 text-center text-xs text-muted-foreground">
+            <footer className="mt-12 hidden pb-4 text-center text-xs text-muted-foreground md:block">
               © {new Date().getFullYear()}{" "}
               <a
                 className="underline underline-offset-2 hover:text-foreground transition-colors"
@@ -429,12 +449,24 @@ export default function Layout() {
             setEditingRecord(null);
             setShowFuelForm(true);
           }}
-          className="fixed z-40 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-lg shadow-accent/30 hover:brightness-110 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] right-[calc(1.5rem+env(safe-area-inset-right,0px))]"
+          className="fixed z-40 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-lg shadow-accent/30 hover:brightness-105 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] right-[calc(1rem+env(safe-area-inset-right,0px))] md:bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] md:right-[calc(1.5rem+env(safe-area-inset-right,0px))] md:h-12 md:w-auto md:rounded-lg md:px-4 md:gap-2"
           aria-label="Add fuel record"
         >
-          <Plus className="h-6 w-6" />
+          <Plus className="h-6 w-6 md:h-5 md:w-5" />
+          <span className="hidden text-sm font-semibold md:inline">Add record</span>
         </button>
       )}
+
+      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-surface/90 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom,0px))] pt-2 backdrop-blur-xl md:hidden" aria-label="Primary navigation">
+        <div className="mx-auto flex max-w-md items-center gap-1">
+          {bottomNavItems.map(({ to, label, icon: Icon }) => (
+            <NavLink key={to} to={to} className={bottomNavLinkClass}>
+              <Icon className="h-4 w-4" aria-hidden />
+              <span className="truncate">{label}</span>
+            </NavLink>
+          ))}
+        </div>
+      </nav>
 
       <FuelRecordForm
         isOpen={showFuelForm}

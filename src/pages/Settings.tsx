@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { getUserVehicles } from '../services/vehicles'
 import { savePreferences, getPreferences } from '../services/preferences'
 import { toTitleCase } from '../utils/formatters'
-import { PageHeader, Card, Select, Label, Alert, PageLoading } from '../components/ui'
+import { Card, Select, Label, Alert, PageLoading } from '../components/ui'
 
 export default function Settings() {
   const [vehicles, setVehicles] = useState<any[]>([])
@@ -78,11 +78,16 @@ export default function Settings() {
   }
 
   return (
-    <div className="space-y-4 max-w-xl">
-      <PageHeader title="Settings" description="Defaults applied when adding a new fuel record." />
+    <div className="app-page max-w-3xl space-y-5">
+      <section className="app-hero p-5 md:p-7">
+        <p className="text-xs font-semibold uppercase app-hero-muted">Preferences</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Settings</h1>
+        <p className="mt-2 text-sm app-hero-muted">Defaults applied when adding a new fuel record.</p>
+      </section>
 
-      <Card>
-        <h2 className="text-sm font-semibold text-foreground mb-4">Defaults</h2>
+      <Card className="section-panel p-5 md:p-6">
+        <h2 className="text-base font-semibold text-foreground mb-1">Defaults</h2>
+        <p className="mb-5 text-sm text-muted-foreground">These choices prefill new fuel records.</p>
 
         {loading && <PageLoading label="Loading settings..." />}
         {error && <Alert className="mb-4">{error}</Alert>}

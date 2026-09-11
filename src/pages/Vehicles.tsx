@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Plus, Pencil, Trash2, Car } from 'lucide-react'
+import { Plus, Pencil, Trash2, Car, Hash } from 'lucide-react'
 import { getUserVehicles, deleteVehicle } from '../services/vehicles'
 import { getUserVehicleCategories } from '../services/vehicleCategories'
 import VehicleForm from '../components/VehicleForm'
-import { Card, PageHeader, PageLoading, EmptyState, Alert, Dialog, DialogFooter, Button } from '../components/ui'
+import { Card, PageLoading, EmptyState, Alert, Dialog, DialogFooter, Button } from '../components/ui'
 
 export default function Vehicles() {
   const [rows, setRows] = useState<any[]>([])
@@ -94,29 +94,51 @@ export default function Vehicles() {
   const isMobile = screenWidth < 768
 
   const actionButtons = (r: any) => (
-    <div className="flex items-center gap-2">
-      <button
+    <div className="flex items-center gap-1">
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={() => handleEdit(r)}
-        className="p-1.5 text-accent hover:bg-accent-muted rounded-lg transition-colors"
+        className="h-8 w-8 text-accent"
         aria-label="Edit vehicle"
       >
         <Pencil className="w-4 h-4" />
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={() => handleDelete(r)}
-        className="p-1.5 text-danger hover:bg-danger-muted rounded-lg transition-colors"
+        className="h-8 w-8 text-danger"
         aria-label="Delete vehicle"
       >
         <Trash2 className="w-4 h-4" />
-      </button>
+      </Button>
     </div>
   )
 
   return (
-    <div className="space-y-4">
-      <PageHeader title="Vehicles" />
+    <div className="app-page space-y-5">
+      <section className="app-hero p-5 md:p-7">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase app-hero-muted">Garage</p>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Vehicles</h1>
+            <p className="mt-2 text-sm app-hero-muted">{rows.length} vehicles saved</p>
+          </div>
+          <Button
+            onClick={() => {
+              setEditingVehicle(null)
+              setShowVehicleForm(true)
+            }}
+            className="hidden md:inline-flex"
+          >
+            <Plus className="h-4 w-4" />
+            Add vehicle
+          </Button>
+        </div>
+      </section>
 
-      <Card padding={false} className="overflow-hidden">
+      <Card padding={false} className="section-panel">
         {loading && <PageLoading />}
         {error && (
           <div className="p-4">
@@ -127,60 +149,36 @@ export default function Vehicles() {
           <>
             {rows.length === 0 ? (
               <EmptyState icon={<Car className="h-6 w-6" />} title="No vehicles" />
-            ) : isMobile ? (
-              <div className="divide-y divide-border">
+            ) : (
+              <div className={isMobile ? "divide-y divide-border" : "grid gap-4 p-4 sm:grid-cols-2 xl:grid-cols-3"}>
                 {rows.map((r: any, idx: number) => (
-                  <div key={idx} className="p-4 hover:bg-muted/50 transition-colors">
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="font-medium text-foreground">
-                        {r.name ?? r.vehicleName ?? 'Unnamed Vehicle'}
+                  <div key={idx} className={isMobile ? "mobile-record hover:bg-muted/50 transition-colors" : "entity-card p-4"}>
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="min-w-0">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-muted text-accent">
+                          <Car className="h-5 w-5" />
+                        </div>
+                        <div className="mt-3 truncate font-semibold text-foreground">
+                          {r.name ?? r.vehicleName ?? 'Unnamed Vehicle'}
+                        </div>
                       </div>
                       {actionButtons(r)}
                     </div>
-                    <div className="space-y-1 text-sm text-muted-foreground">
+                    <dl className={isMobile ? "mobile-meta" : "mt-4 space-y-2 text-sm"}>
                       {r.categoryName && (
-                        <div>
-                          <span className="font-medium text-foreground">Category:</span> {r.categoryName}
-                        </div>
+                        <>
+                          <dt className={isMobile ? "" : "text-muted-foreground"}>Category</dt><dd className={isMobile ? "" : "text-foreground"}>{r.categoryName}</dd>
+                        </>
                       )}
                       {r.vehicleNumber && (
-                        <div>
-                          <span className="font-medium text-foreground">Registration Number:</span> {r.vehicleNumber}
-                        </div>
+                        <>
+                          <dt className={isMobile ? "" : "flex items-center gap-1 text-muted-foreground"}>{!isMobile && <Hash className="h-3.5 w-3.5" />}Registration</dt><dd className={isMobile ? "" : "text-foreground"}>{r.vehicleNumber}</dd>
+                        </>
                       )}
-                    </div>
+                    </dl>
                   </div>
                 ))}
               </div>
-            ) : (
-              <table className="min-w-full text-sm">
-                <thead className="bg-muted border-b border-border">
-                  <tr className="text-left text-muted-foreground">
-                    <th className="py-3 pl-4 pr-4 font-medium">Name</th>
-                    <th className="py-3 pr-4 font-medium">Category</th>
-                    <th className="py-3 pr-4 font-medium">Registration Number</th>
-                    <th className="py-3 pr-4 font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {rows.map((r: any, idx: number) => (
-                    <tr key={idx} className="hover:bg-muted/50 transition-colors">
-                      <td className="py-3 pl-4 pr-4 text-foreground font-medium">
-                        {r.name ?? r.vehicleName ?? 'Unnamed Vehicle'}
-                      </td>
-                      <td className="py-3 pr-4 text-muted-foreground">
-                        {r.categoryName ?? ''}
-                      </td>
-                      <td className="py-3 pr-4 text-muted-foreground">
-                        {r.vehicleNumber ?? ''}
-                      </td>
-                      <td className="py-3 pr-4">
-                        {actionButtons(r)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
             )}
           </>
         )}
@@ -191,7 +189,7 @@ export default function Vehicles() {
           setEditingVehicle(null)
           setShowVehicleForm(true)
         }}
-        className="fixed z-40 w-14 h-14 bg-accent hover:brightness-110 text-accent-foreground rounded-full shadow-lg flex items-center justify-center transition-colors bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] right-[calc(1.5rem+env(safe-area-inset-right,0px))]"
+        className="fixed z-40 w-14 h-14 bg-accent hover:brightness-105 text-accent-foreground rounded-full shadow-lg shadow-accent/30 flex items-center justify-center transition-colors bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] right-[calc(1rem+env(safe-area-inset-right,0px))] md:hidden"
         aria-label="Add vehicle"
       >
         <Plus className="w-6 h-6" />

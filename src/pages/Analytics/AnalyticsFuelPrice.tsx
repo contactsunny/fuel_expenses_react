@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { PageHeader, Card, PageLoading, EmptyState, Alert } from '../../components/ui'
+import { Card, PageLoading, EmptyState, Alert } from '../../components/ui'
 import { getFuelPriceAnalytics } from '../../services/analytics'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts'
 
@@ -201,9 +201,13 @@ export default function AnalyticsFuelPrice() {
   }
 
   return (
-    <div className="space-y-4">
-      <PageHeader title="Fuel Price Analytics" />
-      <Card padding={false} className="p-4 md:p-6">
+    <div className="app-page space-y-5">
+      <section className="app-hero p-5 md:p-7">
+        <p className="text-xs font-semibold uppercase app-hero-muted">Analytics</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Fuel Price</h1>
+        <p className="mt-2 text-sm app-hero-muted">Price movement for the last 6 months.</p>
+      </section>
+      <Card padding={false} className="section-panel p-4 md:p-6">
         {loading && <PageLoading label="Loading…" />}
         {error && <Alert className="m-2">{error}</Alert>}
         {!loading && !error && data.length === 0 && (
@@ -269,5 +273,4 @@ export default function AnalyticsFuelPrice() {
     </div>
   )
 }
-
 

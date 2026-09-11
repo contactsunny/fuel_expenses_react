@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Plus, Pencil, Trash2, Tags } from 'lucide-react'
+import { Plus, Pencil, Trash2, Tags, FileText } from 'lucide-react'
 import { getUserVehicleCategories, deleteVehicleCategory } from '../services/vehicleCategories'
 import CategoryForm from '../components/CategoryForm'
-import { Card, PageHeader, PageLoading, EmptyState, Alert, Dialog, DialogFooter, Button } from '../components/ui'
+import { Card, PageLoading, EmptyState, Alert, Dialog, DialogFooter, Button } from '../components/ui'
 
 export default function Categories() {
   const [rows, setRows] = useState<any[]>([])
@@ -105,29 +105,51 @@ export default function Categories() {
   const isMobile = screenWidth < 768
 
   const actionButtons = (r: any) => (
-    <div className="flex items-center gap-2">
-      <button
+    <div className="flex items-center gap-1">
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={() => handleEdit(r)}
-        className="p-1.5 text-accent hover:bg-accent-muted rounded-lg transition-colors"
+        className="h-8 w-8 text-accent"
         aria-label="Edit category"
       >
         <Pencil className="w-4 h-4" />
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={() => handleDelete(r)}
-        className="p-1.5 text-danger hover:bg-danger-muted rounded-lg transition-colors"
+        className="h-8 w-8 text-danger"
         aria-label="Delete category"
       >
         <Trash2 className="w-4 h-4" />
-      </button>
+      </Button>
     </div>
   )
 
   return (
-    <div className="space-y-4">
-      <PageHeader title="Categories" />
+    <div className="app-page space-y-5">
+      <section className="app-hero p-5 md:p-7">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase app-hero-muted">Organization</p>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Categories</h1>
+            <p className="mt-2 text-sm app-hero-muted">{rows.length} categories available</p>
+          </div>
+          <Button
+            onClick={() => {
+              setEditingCategory(null)
+              setShowCategoryForm(true)
+            }}
+            className="hidden md:inline-flex"
+          >
+            <Plus className="h-4 w-4" />
+            Add category
+          </Button>
+        </div>
+      </section>
 
-      <Card padding={false} className="overflow-hidden">
+      <Card padding={false} className="section-panel">
         {loading && <PageLoading />}
         {error && (
           <div className="p-4">
@@ -138,60 +160,35 @@ export default function Categories() {
           <>
             {rows.length === 0 ? (
               <EmptyState icon={<Tags className="h-6 w-6" />} title="No categories" />
-            ) : isMobile ? (
-              <div className="divide-y divide-border">
+            ) : (
+              <div className={isMobile ? "divide-y divide-border" : "grid gap-4 p-4 sm:grid-cols-2 xl:grid-cols-3"}>
                 {rows.map((r: any, idx: number) => (
-                  <div key={idx} className="p-4 hover:bg-muted/50 transition-colors">
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="font-medium text-foreground">
-                        {r.name ?? r.title ?? r.categoryName ?? 'Unnamed Category'}
+                  <div key={idx} className={isMobile ? "mobile-record hover:bg-muted/50 transition-colors" : "entity-card p-4"}>
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="min-w-0">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-muted text-accent">
+                          <Tags className="h-5 w-5" />
+                        </div>
+                        <div className="mt-3 truncate font-semibold text-foreground">
+                          {r.name ?? r.title ?? r.categoryName ?? 'Unnamed Category'}
+                        </div>
                       </div>
                       {actionButtons(r)}
                     </div>
-                    {columns.filter(c => c.key !== 'name').map(col => {
-                      const val = getValue(r, col)
-                      return val ? (
-                        <div key={col.key} className="text-sm text-muted-foreground">
-                          {val}
-                        </div>
-                      ) : null
-                    })}
+                    <dl className={isMobile ? "mobile-meta" : "mt-4 space-y-2 text-sm"}>
+                      {columns.filter(c => c.key !== 'name').map(col => {
+                        const val = getValue(r, col)
+                        return val ? (
+                          <div key={col.key} className={isMobile ? "contents" : ""}>
+                            <dt className={isMobile ? "" : "flex items-center gap-1 text-muted-foreground"}>{!isMobile && <FileText className="h-3.5 w-3.5" />}{col.label}</dt>
+                            <dd className={isMobile ? "" : "text-foreground"}>{val}</dd>
+                          </div>
+                        ) : null
+                      })}
+                    </dl>
                   </div>
                 ))}
               </div>
-            ) : (
-              columns.length > 0 ? (
-                <table className="min-w-full text-sm">
-                  <thead className="bg-muted border-b border-border">
-                    <tr className="text-left text-muted-foreground">
-                      {columns.map(col => (
-                        <th key={col.key} className="py-3 pl-4 pr-4 font-medium">{col.label}</th>
-                      ))}
-                      <th className="py-3 pr-4 font-medium">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {rows.map((r: any, idx: number) => (
-                      <tr key={idx} className="hover:bg-muted/50 transition-colors">
-                        {columns.map(col => (
-                          <td key={col.key} className="py-3 pl-4 pr-4 text-muted-foreground">
-                            {col.key === 'name' ? (
-                              <span className="font-medium text-foreground">{getValue(r, col)}</span>
-                            ) : (
-                              getValue(r, col)
-                            )}
-                          </td>
-                        ))}
-                        <td className="py-3 pr-4">
-                          {actionButtons(r)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <EmptyState icon={<Tags className="h-6 w-6" />} title="No categories" />
-              )
             )}
           </>
         )}
@@ -202,7 +199,7 @@ export default function Categories() {
           setEditingCategory(null)
           setShowCategoryForm(true)
         }}
-        className="fixed z-40 w-14 h-14 bg-accent hover:brightness-110 text-accent-foreground rounded-full shadow-lg flex items-center justify-center transition-colors bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] right-[calc(1.5rem+env(safe-area-inset-right,0px))]"
+        className="fixed z-40 w-14 h-14 bg-accent hover:brightness-105 text-accent-foreground rounded-full shadow-lg shadow-accent/30 flex items-center justify-center transition-colors bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] right-[calc(1rem+env(safe-area-inset-right,0px))] md:hidden"
         aria-label="Add category"
       >
         <Plus className="w-6 h-6" />
