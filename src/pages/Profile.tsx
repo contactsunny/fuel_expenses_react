@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { User } from 'lucide-react'
-import { PageHeader, Card } from '../components/ui'
+import { Card } from '../components/ui'
 
 function getInitials(name: string): string {
   if (!name) return 'U'
@@ -97,11 +97,15 @@ export default function Profile() {
   const initialsColor = getInitialsColor(userName)
 
   return (
-    <div className="space-y-4 max-w-lg">
-      <PageHeader title="Profile" />
-      <Card className="flex items-center gap-4">
+    <div className="app-page max-w-3xl space-y-5">
+      <section className="app-hero p-5 md:p-7">
+        <p className="text-xs font-semibold uppercase app-hero-muted">Account</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Profile</h1>
+        <p className="mt-2 text-sm app-hero-muted">{user?.email || ''}</p>
+      </section>
+      <Card className="section-panel flex items-center gap-4 p-5 md:p-6">
         {showFallback || !userImage ? (
-          <div className={`w-16 h-16 rounded-2xl ${initialsColor} flex items-center justify-center text-white font-semibold text-xl shrink-0`}>
+          <div className={`w-20 h-20 rounded-xl ${initialsColor} flex items-center justify-center text-white font-semibold text-2xl shrink-0`}>
             {initials}
           </div>
         ) : (
@@ -109,7 +113,7 @@ export default function Profile() {
             key={`${userImage}-${retryCount}`}
             src={userImage}
             alt=""
-            className="w-16 h-16 rounded-2xl object-cover bg-muted shrink-0 ring-1 ring-border"
+            className="w-20 h-20 rounded-xl object-cover bg-muted shrink-0 ring-1 ring-border"
             onError={handleImageError}
             onLoad={handleImageLoad}
             loading="lazy"

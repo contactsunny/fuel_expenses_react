@@ -152,8 +152,8 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
     >
       {error && <Alert className="mb-4">{error}</Alert>}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
+      <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-2">
+        <div className="md:col-span-2">
           <Label htmlFor="fuel-date">Date</Label>
           <Input
             id="fuel-date"
@@ -168,7 +168,7 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
           />
         </div>
 
-        <div>
+        <div className="md:col-span-2">
           <Label htmlFor="fuel-vehicle">Vehicle</Label>
           {loading ? (
             <div className="h-9 flex items-center text-sm text-muted-foreground">Loading vehicles...</div>
@@ -243,7 +243,7 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
           </Select>
         </div>
 
-        <div>
+        <div className="md:col-span-2">
           <Label htmlFor="fuel-payment">Payment Type</Label>
           <Select
             id="fuel-payment"
@@ -258,7 +258,7 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
           </Select>
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="md:col-span-2">
           <Button type="button" variant="outline" className="flex-1" onClick={onClose}>
             Cancel
           </Button>

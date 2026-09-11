@@ -1,13 +1,13 @@
 import type { CSSProperties, SelectHTMLAttributes } from 'react'
 import { cn } from '../../utils/cn'
 
-interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {}
+type SelectProps = SelectHTMLAttributes<HTMLSelectElement>
 
 export function Select({ className, children, style, ...props }: SelectProps) {
   return (
     <select
       className={cn(
-        'w-full min-w-0 h-9 px-3 text-sm rounded-lg appearance-none',
+        'w-full min-w-0 h-10 px-3 text-sm rounded-md appearance-none md:h-9',
         'bg-surface border border-border text-foreground',
         'hover:border-muted-foreground/40',
         'focus:outline-none focus:ring-2 focus:ring-ring focus:border-accent',

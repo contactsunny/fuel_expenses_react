@@ -26,24 +26,26 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Light theme (default before .dark) — clean zinc */
+/* Light theme (default before .dark) */
 :root {
-  --fe-background: #f4f4f5;
-  --fe-foreground: #18181b;
+  --fe-background: #f7f8fa;
+  --fe-foreground: #17191f;
   --fe-surface: #ffffff;
   --fe-surface-elevated: #ffffff;
-  --fe-muted: #f4f4f5;
-  --fe-muted-foreground: #71717a;
-  --fe-border: #e4e4e7;
-  --fe-border-subtle: #f4f4f5;
-  --fe-accent: #0ea5e9;
+  --fe-muted: #eef1f5;
+  --fe-muted-foreground: #667085;
+  --fe-border: #dde3ea;
+  --fe-border-subtle: #edf1f5;
+  --fe-accent: #2563eb;
   --fe-accent-foreground: #ffffff;
-  --fe-accent-muted: rgba(14, 165, 233, 0.12);
-  --fe-danger: #dc2626;
+  --fe-accent-muted: rgba(37, 99, 235, 0.1);
+  --fe-danger: #d92d20;
   --fe-danger-foreground: #ffffff;
-  --fe-danger-muted: rgba(220, 38, 38, 0.1);
-  --fe-success: #16a34a;
-  --fe-ring: rgba(14, 165, 233, 0.4);
+  --fe-danger-muted: rgba(217, 45, 32, 0.1);
+  --fe-success: #079455;
+  --fe-ring: rgba(37, 99, 235, 0.35);
+  --fe-shell: #0f172a;
+  --fe-shell-foreground: #f8fafc;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -53,24 +55,25 @@
   color-scheme: light;
 }
 
-/* GitHub / Linear-inspired dark — not pitch black */
 .dark {
-  --fe-background: #0f1419;
-  --fe-foreground: #e6edf3;
-  --fe-surface: #161b22;
-  --fe-surface-elevated: #1c2128;
-  --fe-muted: #21262d;
-  --fe-muted-foreground: #8b949e;
-  --fe-border: #30363d;
-  --fe-border-subtle: #21262d;
-  --fe-accent: #0ea5e9;
+  --fe-background: #101318;
+  --fe-foreground: #eef2f6;
+  --fe-surface: #171b22;
+  --fe-surface-elevated: #1d222b;
+  --fe-muted: #242a34;
+  --fe-muted-foreground: #98a2b3;
+  --fe-border: #303846;
+  --fe-border-subtle: #252b35;
+  --fe-accent: #60a5fa;
   --fe-accent-foreground: #ffffff;
-  --fe-accent-muted: rgba(14, 165, 233, 0.15);
-  --fe-danger: #f85149;
+  --fe-accent-muted: rgba(96, 165, 250, 0.14);
+  --fe-danger: #f97066;
   --fe-danger-foreground: #ffffff;
   --fe-danger-muted: rgba(248, 81, 73, 0.15);
   --fe-success: #3fb950;
   --fe-ring: rgba(14, 165, 233, 0.45);
+  --fe-shell: #0b1220;
+  --fe-shell-foreground: #f8fafc;
   color-scheme: dark;
 }
 
@@ -104,8 +107,17 @@
   body {
     margin: 0;
     min-height: 100dvh;
-    background-color: var(--fe-background);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--fe-background) 88%, var(--fe-accent) 12%) 0, var(--fe-background) 18rem),
+      var(--fe-background);
     color: var(--fe-foreground);
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
   }
 
   .sr-only {
@@ -203,6 +215,134 @@
   );
   background-size: 200% 100%;
   animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@layer components {
+  .app-page {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 76rem;
+  }
+
+  .app-hero {
+    border: 1px solid color-mix(in srgb, var(--fe-border) 72%, transparent);
+    border-radius: 1rem;
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--fe-shell) 94%, var(--fe-accent) 6%), color-mix(in srgb, var(--fe-shell) 78%, #155e75 22%));
+    color: var(--fe-shell-foreground);
+    box-shadow: 0 18px 50px -36px rgba(15, 23, 42, 0.75);
+  }
+
+  .app-hero-muted {
+    color: color-mix(in srgb, var(--fe-shell-foreground) 72%, transparent);
+  }
+
+  .metric-card {
+    border: 1px solid color-mix(in srgb, var(--fe-border) 86%, transparent);
+    border-radius: 0.875rem;
+    background: color-mix(in srgb, var(--fe-surface) 96%, var(--fe-accent) 4%);
+    box-shadow: 0 14px 36px -32px rgba(15, 23, 42, 0.7);
+  }
+
+  .metric-label {
+    color: var(--fe-muted-foreground);
+    font-size: 0.75rem;
+    font-weight: 650;
+  }
+
+  .metric-value {
+    color: var(--fe-foreground);
+    font-size: 1.25rem;
+    font-weight: 720;
+    letter-spacing: 0;
+  }
+
+  .entity-card {
+    border: 1px solid var(--fe-border);
+    border-radius: 0.875rem;
+    background: var(--fe-surface);
+    box-shadow: 0 14px 36px -34px rgba(15, 23, 42, 0.65);
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease,
+      transform 0.15s ease;
+  }
+
+  .entity-card:hover {
+    border-color: color-mix(in srgb, var(--fe-accent) 30%, var(--fe-border));
+    box-shadow: 0 18px 46px -34px rgba(15, 23, 42, 0.85);
+    transform: translateY(-1px);
+  }
+
+  .section-panel {
+    border: 1px solid var(--fe-border);
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--fe-surface) 94%, transparent);
+    box-shadow: 0 18px 60px -44px rgba(15, 23, 42, 0.65);
+    overflow: hidden;
+  }
+
+  .app-table {
+    min-width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.875rem;
+  }
+
+  .app-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: color-mix(in srgb, var(--fe-surface) 88%, var(--fe-muted));
+  }
+
+  .app-table th {
+    border-bottom: 1px solid var(--fe-border);
+    color: var(--fe-muted-foreground);
+    font-size: 0.75rem;
+    font-weight: 650;
+    letter-spacing: 0;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .app-table td {
+    border-bottom: 1px solid var(--fe-border-subtle);
+    padding: 0.875rem 1rem;
+    vertical-align: middle;
+  }
+
+  .app-table tbody tr {
+    transition: background-color 0.15s ease;
+  }
+
+  .app-table tbody tr:hover {
+    background-color: color-mix(in srgb, var(--fe-muted) 62%, transparent);
+  }
+
+  .mobile-record {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .mobile-meta {
+    display: grid;
+    grid-template-columns: minmax(6.5rem, 0.45fr) 1fr;
+    gap: 0.45rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .mobile-meta dt {
+    color: var(--fe-muted-foreground);
+  }
+
+  .mobile-meta dd {
+    min-width: 0;
+    color: var(--fe-foreground);
+    overflow-wrap: anywhere;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -108,7 +108,7 @@ export default function VehicleForm({ isOpen, onClose, onSave, vehicle }: Vehicl
     >
       {error && <Alert className="mb-4">{error}</Alert>}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="grid gap-4">
         <div>
           <Label htmlFor="vehicle-name">Vehicle Name *</Label>
           <Input

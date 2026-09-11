@@ -59,22 +59,22 @@ export default function Login() {
   }, [])
 
   return (
-    <div className="min-h-dvh flex items-center justify-center p-6 pt-[max(1.5rem,env(safe-area-inset-top,0px))] pb-[max(1.5rem,env(safe-area-inset-bottom,0px))] relative overflow-hidden bg-background">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-60 dark:opacity-40"
-        style={{
-          background:
-            'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(14,165,233,0.18), transparent), radial-gradient(ellipse 60% 40% at 100% 100%, rgba(14,165,233,0.08), transparent)',
-        }}
-        aria-hidden
-      />
-      <Card className="relative w-full max-w-sm shadow-xl shadow-black/10 dark:shadow-black/40 border-border p-8 animate-scale-in" padding={false}>
-        <div className="p-8">
-          <div className="text-center mb-8">
+    <div className="min-h-dvh grid bg-background p-4 pt-[max(1rem,env(safe-area-inset-top,0px))] pb-[max(1rem,env(safe-area-inset-bottom,0px))] md:grid-cols-[1fr_26rem] md:gap-6 md:p-6">
+      <section className="app-hero hidden min-h-[calc(100dvh-3rem)] items-end p-10 md:flex">
+        <div className="max-w-xl">
+          <p className="text-xs font-semibold uppercase app-hero-muted">Fuel Expenses</p>
+          <h1 className="mt-3 text-5xl font-semibold tracking-tight">Track fuel spending with less friction.</h1>
+          <p className="mt-4 text-base app-hero-muted">A focused PWA for fuel logs, vehicles, categories, and spend analytics.</p>
+        </div>
+      </section>
+      <div className="flex min-h-[calc(100dvh-2rem)] items-center justify-center">
+      <Card className="w-full max-w-sm animate-scale-in" padding={false}>
+        <div className="p-6 md:p-8">
+          <div className="mb-8 text-center">
             <img
               src="/favicon.svg"
               alt=""
-              className="mx-auto mb-4 h-12 w-12 rounded-2xl shadow-sm ring-1 ring-border/60"
+              className="mx-auto mb-4 h-12 w-12 rounded-lg shadow-sm ring-1 ring-border/60"
               width={48}
               height={48}
             />
@@ -84,6 +84,7 @@ export default function Login() {
           <div id="googleBtn" className="flex justify-center min-h-[44px]" />
         </div>
       </Card>
+      </div>
     </div>
   )
 }

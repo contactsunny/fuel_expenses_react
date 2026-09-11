@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { PageHeader, Card, PageLoading, EmptyState, Alert } from '../../components/ui'
+import { Card, PageLoading, EmptyState, Alert } from '../../components/ui'
 import { getCategoryAnalytics } from '../../services/analytics'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 
@@ -68,9 +68,13 @@ export default function AnalyticsVehicleCategory() {
   }
 
   return (
-    <div className="space-y-4">
-      <PageHeader title="Vehicle Category Analytics" />
-      <Card padding={false} className="p-4 md:p-6">
+    <div className="app-page space-y-5">
+      <section className="app-hero p-5 md:p-7">
+        <p className="text-xs font-semibold uppercase app-hero-muted">Analytics</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Vehicle Category</h1>
+        <p className="mt-2 text-sm app-hero-muted">Spend distribution by vehicle category.</p>
+      </section>
+      <Card padding={false} className="section-panel p-4 md:p-6">
         {loading && <PageLoading label="Loading…" />}
         {error && <Alert className="m-2">{error}</Alert>}
         {!loading && !error && data.length === 0 && (
@@ -112,5 +116,4 @@ export default function AnalyticsVehicleCategory() {
     </div>
   )
 }
-
 

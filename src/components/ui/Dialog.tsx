@@ -40,23 +40,23 @@ export function Dialog({ open, onClose, title, children, className, size = 'md' 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 pt-[max(1rem,env(safe-area-inset-top,0px))] pb-[max(1rem,env(safe-area-inset-bottom,0px))] animate-fade-in"
+      className="fixed inset-0 z-50 flex items-end justify-center p-0 pt-[max(1rem,env(safe-area-inset-top,0px))] md:items-center md:p-4 md:pb-[max(1rem,env(safe-area-inset-bottom,0px))] animate-fade-in"
       role="dialog"
       aria-modal="true"
       aria-labelledby={title ? 'dialog-title' : undefined}
       onClick={onClose}
     >
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+      <div className="absolute inset-0 bg-slate-950/55 backdrop-blur-[3px]" />
       <div
         className={cn(
-          'relative z-10 w-full rounded-2xl border border-border bg-surface-elevated shadow-xl shadow-black/20',
-          'animate-scale-in max-h-[90vh] overflow-y-auto',
+          'relative z-10 w-full rounded-t-2xl border border-border bg-surface-elevated shadow-2xl shadow-black/30 md:rounded-xl',
+          'animate-slide-up max-h-[92vh] overflow-y-auto md:animate-scale-in md:max-h-[90vh]',
           sizeClass[size],
           className
         )}
         onClick={stop}
       >
-        <div className="flex items-center justify-between gap-3 px-5 pt-5 pb-2">
+        <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
           {title ? (
             <h2 id="dialog-title" className="text-lg font-semibold tracking-tight text-foreground">
               {title}
@@ -68,7 +68,7 @@ export function Dialog({ open, onClose, title, children, className, size = 'md' 
             <X className="h-4 w-4" />
           </Button>
         </div>
-        <div className="px-5 pb-5">{children}</div>
+        <div className="px-5 py-5">{children}</div>
       </div>
     </div>
   )

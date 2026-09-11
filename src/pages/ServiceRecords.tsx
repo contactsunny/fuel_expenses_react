@@ -1,11 +1,15 @@
 import { Wrench } from 'lucide-react'
-import { PageHeader, Card, EmptyState } from '../components/ui'
+import { Card, EmptyState } from '../components/ui'
 
 export default function ServiceRecords() {
   return (
-    <div className="space-y-4">
-      <PageHeader title="Service Records" description="Maintenance and service history for your vehicles." />
-      <Card padding={false}>
+    <div className="app-page space-y-5">
+      <section className="app-hero p-5 md:p-7">
+        <p className="text-xs font-semibold uppercase app-hero-muted">Maintenance</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Service Records</h1>
+        <p className="mt-2 text-sm app-hero-muted">Maintenance and service history for your vehicles.</p>
+      </section>
+      <Card padding={false} className="section-panel">
         <EmptyState
           icon={<Wrench className="h-5 w-5" />}
           title="Coming soon"
