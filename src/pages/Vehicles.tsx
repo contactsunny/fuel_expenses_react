@@ -121,7 +121,7 @@ export default function Vehicles() {
       <section className="app-hero p-5 md:p-7">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase app-hero-muted">Garage</p>
+            <p className="app-eyebrow app-hero-muted">Garage</p>
             <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Vehicles</h1>
             <p className="mt-2 text-sm app-hero-muted">{rows.length} vehicles saved</p>
           </div>

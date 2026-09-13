@@ -3,7 +3,7 @@ import { cn } from '../../utils/cn'
 export function Spinner({ className }: { className?: string }) {
   return (
     <svg
-      className={cn('h-5 w-5 animate-spin text-muted-foreground', className)}
+      className={cn('h-5 w-5 animate-spin text-accent', className)}
       viewBox="0 0 24 24"
       fill="none"
       aria-hidden
@@ -19,7 +19,7 @@ export function Spinner({ className }: { className?: string }) {
 }
 
 export function Skeleton({ className }: { className?: string }) {
-  return <div className={cn('rounded-lg animate-shimmer', className)} aria-hidden />
+  return <div className={cn('rounded-[var(--radius-card)] animate-shimmer', className)} aria-hidden />
 }
 
 export function PageLoading({ label = 'Loading…' }: { label?: string }) {

@@ -6,32 +6,35 @@ Related: [Components](./07-components.md) · [Overview](./01-overview.md) · [St
 
 Lightweight custom system: CSS semantic tokens + [`src/components/ui/`](../src/components/ui/) primitives + Lucide icons + Inter Variable font.
 
+Visual direction: Fintrack-inspired personal-finance surfaces with a **blue** accent (not a second UI kit).
+
 No MUI / Ant Design / shadcn CLI scaffold.
 
 ### Typography
 
 - Font: Inter Variable (`@fontsource-variable/inter`) via `--font-sans`
-- Page titles: `text-xl` / `text-2xl`, `font-semibold`, tight tracking
-- Body / tables: `text-sm`
+- Helpers: `.app-eyebrow`, `.app-title`
+- Page heroes use large semibold titles; body / tables: `text-sm`
 
 ### Icons
 
 - Library: **lucide-react**
-- Nav and actions use Lucide; emoji icons removed from shell
+- Brand mark: `public/favicon.svg` (blue pump); PWA PNGs via `npm run generate-icons`
 
 ## Color tokens
 
-Defined in [`src/index.css`](../src/index.css) as `--fe-*`, mapped into Tailwind `@theme` colors (`background`, `foreground`, `surface`, `muted`, `border`, `accent`, `danger`, `success`, `ring`).
+Defined in [`src/index.css`](../src/index.css) as `--fe-*`, mapped into Tailwind `@theme` (`background`, `foreground`, `surface`, `muted`, `border`, `accent`, `danger`, `success`, `ring`, `shell`).
 
-| Token | Dark (default aesthetic) | Light |
-|-------|--------------------------|-------|
-| background | `#0f1419` | `#f4f4f5` |
-| surface | `#161b22` | `#ffffff` |
-| foreground | `#e6edf3` | `#18181b` |
-| accent | `#0ea5e9` | `#0ea5e9` |
-| border | `#30363d` | `#e4e4e7` |
+| Token | Light | Dark |
+|-------|-------|------|
+| background | `#f4f6fa` | `#0b1220` |
+| surface | `#ffffff` | `#131820` |
+| foreground | `#0f172a` | `#e8eef8` |
+| accent | `#2563eb` | `#60a5fa` |
+| border | `#d5dde8` | `#2a3344` |
+| shell | `#0b1220` | `#070b14` |
 
-Dark is GitHub/Linear-inspired — not pitch black.
+Radius tokens: `--radius-control` / `--radius-card` / `--radius-panel`. Product breakpoint remains **768px**.
 
 ## Themes
 
@@ -43,30 +46,33 @@ Dark is GitHub/Linear-inspired — not pitch black.
 | API | `useTheme()` → `{ theme, resolvedTheme, setTheme, toggleTheme }` |
 | Toggle | Cycles light → dark → system |
 | FOUC prevention | Inline script in `index.html` |
-| Transitions | `.theme-transitioning` class briefly on `<html>` |
 | Class strategy | `.dark` on `<html>` |
-
-See [ThemeContext](../src/contexts/ThemeContext.tsx).
+| theme-color | `#f4f6fa` light / `#0b1220` dark |
 
 ## Spacing & layout
 
-- Page padding: `p-4 md:p-6`
-- Cards: `rounded-xl` / `rounded-2xl` + soft border + light shadow
-- Breakpoint mobile vs desktop tables / sidebar: **768px**
+- Page: `.app-page` + `space-y-5`; main padding clears mobile bottom nav
+- Surfaces: `.app-hero`, `.metric-card`, `.section-panel`, `.entity-card`, `.app-table`
+- Cards: token radii + soft elevation
+
+## Navigation chrome
+
+- Desktop (`≥768`): persistent sidebar
+- Mobile (`<768`): bottom bar (Records, Analytics, Vehicles, Categories, Settings) + header drawer for full IA
 
 ## Animations
 
-- `animate-fade-in`, `animate-scale-in` (modals)
-- `animate-slide-up` (install prompt)
+- `animate-fade-in`, `animate-scale-in` (desktop modals)
+- `animate-slide-up` (mobile sheet dialogs / install prompt)
 - `animate-shimmer` (skeletons)
 - Honors `prefers-reduced-motion`
 
 ## PWA theming
 
-- Manifest `theme_color` / `background_color`: `#0f1419`
+- Manifest `theme_color` / `background_color`: `#0b1210`
 - Meta theme-color updates with resolved theme
-- `viewport-fit=cover` for notched devices
+- `viewport-fit=cover` + safe-area insets on header, bottom nav, FAB, install prompt
 
 ## Primitives (`src/components/ui`)
 
-Button, Input, Select, Textarea, Label, Card, Dialog, Badge, Spinner/Skeleton/PageLoading, EmptyState, PageHeader, StatChip, Alert.
+Button, Input, Select, Textarea, Label, Card, Dialog (sheet-like on mobile), Badge, Spinner/Skeleton/PageLoading, EmptyState, PageHeader, StatChip (`chip` \| `metric`), Alert.

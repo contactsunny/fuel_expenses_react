@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Filter, Pencil, Trash2, ChevronLeft, ChevronRight, ClipboardList, CalendarDays, IndianRupee, Fuel } from 'lucide-react'
+import { Filter, Pencil, Trash2, ChevronLeft, ChevronRight, ClipboardList, CalendarDays, IndianRupee, Fuel, Hash, Gauge } from 'lucide-react'
 import { getUserFuel, deleteFuel } from '../services/fuel'
 import { getUserVehicles } from '../services/vehicles'
 import { getUserVehicleCategories } from '../services/vehicleCategories'
@@ -17,6 +17,7 @@ import {
   PageLoading,
   EmptyState,
   Alert,
+  StatChip,
 } from '../components/ui'
 
 export default function Dashboard() {
@@ -238,6 +239,13 @@ export default function Dashboard() {
     }, 0)
   }, [rows])
 
+  const averageCostPerLitre = useMemo(() => {
+    if (totalLitres <= 0) return null
+    return totalAmount / totalLitres
+  }, [totalAmount, totalLitres])
+
+  const recordCount = rows.length
+
   const totalPages = Math.ceil(rows.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
@@ -275,32 +283,52 @@ export default function Dashboard() {
       <section className="app-hero overflow-hidden p-5 md:p-7">
         <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase app-hero-muted">Fuel log</p>
+            <p className="app-eyebrow app-hero-muted">Fuel log</p>
             <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Records</h1>
             <p className="mt-2 max-w-2xl text-sm app-hero-muted">
-              {rows.length} records in view for {formatDateRange(dateFrom, dateTo)}
+              {recordCount} records in view for {formatDateRange(dateFrom, dateTo)}
             </p>
           </div>
-          <Button variant="secondary" size="md" onClick={() => setShowFiltersModal(true)} className="bg-white/10 text-white hover:bg-white/15 md:w-auto">
+          <Button variant="secondary" size="md" onClick={() => setShowFiltersModal(true)} className="bg-white/10 text-white hover:bg-white/15 border-0 md:w-auto">
             <Filter className="h-4 w-4" />
             <span>Filters</span>
           </Button>
         </div>
       </section>
 
-      <div className="grid gap-3 md:grid-cols-3">
-        <div className="metric-card p-4">
-          <div className="flex items-center gap-2 text-accent"><CalendarDays className="h-4 w-4" /><span className="metric-label">Range</span></div>
-          <div className="metric-value mt-2">{formatDateRange(dateFrom, dateTo)}</div>
-        </div>
-        <div className="metric-card p-4">
-          <div className="flex items-center gap-2 text-accent"><IndianRupee className="h-4 w-4" /><span className="metric-label">Spend</span></div>
-          <div className="metric-value mt-2">{moneyInteger.format(Math.round(totalAmount))}</div>
-        </div>
-        <div className="metric-card p-4">
-          <div className="flex items-center gap-2 text-accent"><Fuel className="h-4 w-4" /><span className="metric-label">Volume</span></div>
-          <div className="metric-value mt-2">{Math.round(totalLitres)} L</div>
-        </div>
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <StatChip variant="metric" label="Range" className="col-span-2 md:col-span-1">
+          <span className="flex items-start gap-2 text-base md:text-xl">
+            <CalendarDays className="mt-1 h-4 w-4 shrink-0 text-accent" aria-hidden />
+            <span className="leading-snug">{formatDateRange(dateFrom, dateTo)}</span>
+          </span>
+        </StatChip>
+        <StatChip variant="metric" label="Spend">
+          <span className="flex items-center gap-2">
+            <IndianRupee className="h-4 w-4 text-accent" aria-hidden />
+            {moneyInteger.format(Math.round(totalAmount))}
+          </span>
+        </StatChip>
+        <StatChip variant="metric" label="Volume">
+          <span className="flex items-center gap-2">
+            <Fuel className="h-4 w-4 text-accent" aria-hidden />
+            {Math.round(totalLitres)} L
+          </span>
+        </StatChip>
+        <StatChip variant="metric" label="Fill-ups">
+          <span className="flex items-center gap-2">
+            <Hash className="h-4 w-4 text-accent" aria-hidden />
+            {recordCount}
+          </span>
+        </StatChip>
+        {averageCostPerLitre != null && (
+          <StatChip variant="metric" label="Avg cost / L" className="col-span-2 md:col-span-4 lg:col-span-1">
+            <span className="flex items-center gap-2">
+              <Gauge className="h-4 w-4 text-accent" aria-hidden />
+              {money.format(averageCostPerLitre)}
+            </span>
+          </StatChip>
+        )}
       </div>
 
       <Dialog open={showFiltersModal} onClose={() => setShowFiltersModal(false)} title="Filters" size="lg">
@@ -394,17 +422,22 @@ export default function Dashboard() {
                     const dateVal = r.date ?? r.createdAt ?? ''
                     const date = typeof dateVal === 'number' || /\d+/.test(dateVal) ? new Date(Number(dateVal)) : new Date(dateVal)
                     return (
-                      <div key={idx} className="mobile-record hover:bg-muted/50 transition-colors">
+                      <div key={idx} className="mobile-record entity-card mx-3 my-3 border-0 shadow-none hover:bg-muted/40 transition-colors md:mx-0">
                         <div className="flex justify-between items-start gap-2">
-                          <div className="font-medium text-foreground text-sm">
-                            {isNaN(date.getTime()) ? '' : fmt.format(date)}
+                          <div>
+                            <div className="font-semibold text-foreground text-sm">
+                              {isNaN(date.getTime()) ? '' : fmt.format(date)}
+                            </div>
+                            <div className="mt-1 text-base font-semibold tracking-tight text-foreground">
+                              {typeof r.price === 'number' || typeof r.amount === 'number' ? money.format(Number(r.price ?? r.amount)) : (r.price ?? r.amount ?? '')}
+                            </div>
                           </div>
                           <div className="flex items-center gap-1">
-                            <Badge>{toTitleCase(r.fuelType ?? r.type ?? '')}</Badge>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-accent" onClick={() => handleEdit(r)} aria-label="Edit record">
+                            <Badge tone="accent">{toTitleCase(r.fuelType ?? r.type ?? '')}</Badge>
+                            <Button variant="ghost" size="icon" className="h-10 w-10 text-accent" onClick={() => handleEdit(r)} aria-label="Edit record">
                               <Pencil className="h-4 w-4" />
                             </Button>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-danger" onClick={() => handleDelete(r)} aria-label="Delete record">
+                            <Button variant="ghost" size="icon" className="h-10 w-10 text-danger" onClick={() => handleDelete(r)} aria-label="Delete record">
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
@@ -413,7 +446,6 @@ export default function Dashboard() {
                           <dt>Vehicle</dt><dd>{r.vehicleName ?? r.vehicle ?? ''}</dd>
                           <dt>Category</dt><dd>{r.vehicleCategoryName ?? ''}</dd>
                           <dt>Volume</dt><dd>{r.litres ?? r.liters ?? r.volume ?? r.quantity ?? ''} L</dd>
-                          <dt>Price</dt><dd>{typeof r.price === 'number' || typeof r.amount === 'number' ? money.format(Number(r.price ?? r.amount)) : (r.price ?? r.amount ?? '')}</dd>
                         </dl>
                       </div>
                     )

@@ -99,7 +99,7 @@ export default function Profile() {
   return (
     <div className="app-page max-w-3xl space-y-5">
       <section className="app-hero p-5 md:p-7">
-        <p className="text-xs font-semibold uppercase app-hero-muted">Account</p>
+        <p className="app-eyebrow app-hero-muted">Account</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Profile</h1>
         <p className="mt-2 text-sm app-hero-muted">{user?.email || ''}</p>
       </section>

@@ -26,15 +26,15 @@ import { Button } from "./ui";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
-    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors duration-150",
+    "flex items-center gap-3 rounded-[var(--radius-control)] px-3 py-2.5 text-sm transition-colors duration-150",
     isActive
-      ? "bg-accent text-accent-foreground font-semibold shadow-sm shadow-accent/20"
+      ? "bg-accent text-accent-foreground font-semibold shadow-sm shadow-accent/25"
       : "text-muted-foreground hover:bg-muted hover:text-foreground"
   );
 
 const subLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
-    "flex items-center rounded-md px-3 py-2 text-sm transition-colors duration-150",
+    "flex items-center rounded-[var(--radius-control)] px-3 py-2 text-sm transition-colors duration-150",
     isActive
       ? "bg-accent-muted text-accent font-medium"
       : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -42,7 +42,7 @@ const subLinkClass = ({ isActive }: { isActive: boolean }) =>
 
 const bottomNavLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
-    "relative flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1.5 text-[11px] font-medium transition-colors",
+    "relative flex min-h-12 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-[var(--radius-control)] px-2 py-1.5 text-[11px] font-medium transition-colors",
     isActive
       ? "bg-accent-muted text-accent"
       : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -243,7 +243,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-dvh bg-background text-foreground grid grid-rows-[auto_1fr]">
-      <header className="sticky top-0 z-30 border-b border-border bg-surface/85 backdrop-blur-xl supports-[backdrop-filter]:bg-surface/75 pt-[env(safe-area-inset-top,0px)]">
+      <header className="sticky top-0 z-30 border-b border-border bg-surface/90 backdrop-blur-xl supports-[backdrop-filter]:bg-surface/80 pt-[env(safe-area-inset-top,0px)]">
         <div className="h-14 px-3 md:px-6 flex items-center justify-between w-full">
           <div className="flex items-center gap-2.5">
             <Button
@@ -262,11 +262,11 @@ export default function Layout() {
                 <Menu className="h-5 w-5" />
               )}
             </Button>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <img
                 src="/favicon.svg"
                 alt=""
-                className="h-7 w-7 rounded-md shadow-sm ring-1 ring-border/60"
+                className="h-7 w-7 rounded-[var(--radius-control)] shadow-sm ring-1 ring-border/60"
                 width={28}
                 height={28}
               />
@@ -318,7 +318,7 @@ export default function Layout() {
 
       {sidebarOpen && screenWidth < 768 && (
         <div
-          className="fixed inset-0 bg-black/50 z-10 md:hidden animate-fade-in"
+          className="fixed inset-0 bg-shell/50 z-10 md:hidden animate-fade-in"
           onClick={() => setSidebarOpen(false)}
           aria-hidden
         />
@@ -331,8 +331,8 @@ export default function Layout() {
         aria-label="Main navigation"
       >
         <nav className="p-4 space-y-1">
-          <div className="mb-4 rounded-xl bg-muted p-4">
-            <p className="text-xs font-semibold uppercase text-muted-foreground">Workspace</p>
+          <div className="mb-4 rounded-[var(--radius-card)] border border-border bg-accent-muted/40 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Workspace</p>
             <p className="mt-1 truncate text-sm font-semibold text-foreground">{userName}</p>
             <p className="truncate text-xs text-muted-foreground">{userData?.email || "Fuel log"}</p>
           </div>
@@ -351,7 +351,7 @@ export default function Layout() {
               className={cn(
                 "px-3 py-2.5 rounded-lg cursor-pointer list-none flex items-center justify-between text-sm transition-colors",
                 isAnalyticsPage
-                  ? "bg-accent text-accent-foreground font-semibold shadow-sm shadow-accent/20"
+                  ? "bg-accent text-accent-foreground font-semibold shadow-sm shadow-accent/25"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
@@ -449,7 +449,7 @@ export default function Layout() {
             setEditingRecord(null);
             setShowFuelForm(true);
           }}
-          className="fixed z-40 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-lg shadow-accent/30 hover:brightness-105 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] right-[calc(1rem+env(safe-area-inset-right,0px))] md:bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] md:right-[calc(1.5rem+env(safe-area-inset-right,0px))] md:h-12 md:w-auto md:rounded-lg md:px-4 md:gap-2"
+          className="fixed z-40 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-lg shadow-accent/30 hover:brightness-105 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] right-[calc(1rem+env(safe-area-inset-right,0px))] md:bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] md:right-[calc(1.5rem+env(safe-area-inset-right,0px))] md:h-11 md:w-auto md:rounded-[var(--radius-control)] md:px-4 md:gap-2"
           aria-label="Add fuel record"
         >
           <Plus className="h-6 w-6 md:h-5 md:w-5" />
