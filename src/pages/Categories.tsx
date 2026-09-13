@@ -132,7 +132,7 @@ export default function Categories() {
       <section className="app-hero p-5 md:p-7">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase app-hero-muted">Organization</p>
+            <p className="app-eyebrow app-hero-muted">Organization</p>
             <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Categories</h1>
             <p className="mt-2 text-sm app-hero-muted">{rows.length} categories available</p>
           </div>

@@ -80,7 +80,7 @@ export default function Settings() {
   return (
     <div className="app-page max-w-3xl space-y-5">
       <section className="app-hero p-5 md:p-7">
-        <p className="text-xs font-semibold uppercase app-hero-muted">Preferences</p>
+        <p className="app-eyebrow app-hero-muted">Preferences</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Settings</h1>
         <p className="mt-2 text-sm app-hero-muted">Defaults applied when adding a new fuel record.</p>
       </section>

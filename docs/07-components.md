@@ -12,7 +12,7 @@ Shared presentational building blocks. Prefer these over ad-hoc Tailwind repeats
 | `Input`, `Select`, `Textarea`, `Label` | Form controls |
 | `Card` | Surface panel |
 | `Dialog`, `DialogFooter` | Modal overlay (Escape + body scroll lock) |
-| `Badge`, `StatChip` | Chips / tags |
+| `Badge`, `StatChip` | Chips / tags; `StatChip` supports `variant="metric"` for KPI cards |
 | `Spinner`, `Skeleton`, `PageLoading` | Loading |
 | `EmptyState`, `PageHeader`, `Alert` | Page chrome / feedback |
 
@@ -20,7 +20,7 @@ Import via `from '../components/ui'` or `./ui`.
 
 Utility: [`src/utils/cn.ts`](../src/utils/cn.ts) for class joining.
 
-Icons: **lucide-react** throughout.
+Icons: **lucide-react** throughout. Dialog is sheet-like on `<768` and centered on desktop.
 
 ---
 
@@ -29,13 +29,13 @@ Icons: **lucide-react** throughout.
 | Field | Detail |
 |-------|--------|
 | File | [`Layout.tsx`](../src/components/Layout.tsx) |
-| Purpose | App shell: header, sidebar, outlet, footer, fuel FAB, fuel form modal |
+| Purpose | App shell: header, sidebar, mobile bottom nav, outlet, footer, fuel FAB, fuel form modal |
 | Props | None |
 | Children | Via `<Outlet />` |
 | Dependencies | ThemeContext, FuelRecordContext, FuelRecordForm, getPreferences, Lucide, UI Button |
-| Styling | Tokens + Lucide nav icons; theme cycle button (light/dark/system) |
+| Styling | Blue accent tokens + Lucide nav icons; theme cycle button (light/dark/system) |
 
-Behaviors unchanged: logout clears localStorage; FAB on Records only; preferences load for fuel form defaults.
+Behaviors unchanged: logout clears localStorage; FAB on Records only; preferences load for fuel form defaults. Mobile bottom bar: Records, Analytics, Vehicles, Categories, Settings; drawer keeps full IA.
 
 ---
 

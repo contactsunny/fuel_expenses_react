@@ -203,7 +203,7 @@ export default function AnalyticsFuelPrice() {
   return (
     <div className="app-page space-y-5">
       <section className="app-hero p-5 md:p-7">
-        <p className="text-xs font-semibold uppercase app-hero-muted">Analytics</p>
+        <p className="app-eyebrow app-hero-muted">Analytics</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Fuel Price</h1>
         <p className="mt-2 text-sm app-hero-muted">Price movement for the last 6 months.</p>
       </section>
@@ -214,17 +214,21 @@ export default function AnalyticsFuelPrice() {
           <EmptyState title="No data available" description="There is nothing to show for the last 6 months." />
         )}
         {!loading && !error && data.length > 0 && (
+          <>
+          <p className="mb-3 px-1 text-sm text-muted-foreground">
+            Petrol and diesel unit prices over the last 6 months.
+          </p>
           <div className={isMobile ? "h-80" : "h-96 md:h-[500px]"}>
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data} margin={{ left: isMobile ? 8 : 12, right: isMobile ? 8 : 12, top: 12, bottom: isMobile ? 8 : 12 }}>
                 <defs>
                   <linearGradient id="colorPetrol" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0.1}/>
+                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0.1}/>
                   </linearGradient>
                   <linearGradient id="colorDiesel" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#22c55e" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#22c55e" stopOpacity={0.1}/>
+                    <stop offset="5%" stopColor="#60a5fa" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#60a5fa" stopOpacity={0.1}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#30363d" strokeOpacity={0.5} />
@@ -250,7 +254,7 @@ export default function AnalyticsFuelPrice() {
                 <Area 
                   type="monotone" 
                   dataKey="petrol" 
-                  stroke="#0ea5e9" 
+                  stroke="#2563eb" 
                   strokeWidth={2}
                   fill="url(#colorPetrol)"
                   name="Petrol"
@@ -259,7 +263,7 @@ export default function AnalyticsFuelPrice() {
                   <Area 
                     type="monotone" 
                     dataKey="diesel" 
-                    stroke="#22c55e" 
+                    stroke="#60a5fa" 
                     strokeWidth={2}
                     fill="url(#colorDiesel)"
                     name="Diesel"
@@ -268,6 +272,7 @@ export default function AnalyticsFuelPrice() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
+          </>
         )}
       </Card>
     </div>

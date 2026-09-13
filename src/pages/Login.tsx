@@ -62,7 +62,7 @@ export default function Login() {
     <div className="min-h-dvh grid bg-background p-4 pt-[max(1rem,env(safe-area-inset-top,0px))] pb-[max(1rem,env(safe-area-inset-bottom,0px))] md:grid-cols-[1fr_26rem] md:gap-6 md:p-6">
       <section className="app-hero hidden min-h-[calc(100dvh-3rem)] items-end p-10 md:flex">
         <div className="max-w-xl">
-          <p className="text-xs font-semibold uppercase app-hero-muted">Fuel Expenses</p>
+          <p className="app-eyebrow app-hero-muted">Fuel Expenses</p>
           <h1 className="mt-3 text-5xl font-semibold tracking-tight">Track fuel spending with less friction.</h1>
           <p className="mt-4 text-base app-hero-muted">A focused PWA for fuel logs, vehicles, categories, and spend analytics.</p>
         </div>

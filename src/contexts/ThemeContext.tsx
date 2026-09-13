@@ -35,7 +35,7 @@ function applyTheme(resolved: ResolvedTheme) {
   root.style.colorScheme = resolved
   const meta = document.querySelector('meta[name="theme-color"]')
   if (meta) {
-    meta.setAttribute('content', resolved === 'dark' ? '#0f1419' : '#f4f4f5')
+    meta.setAttribute('content', resolved === 'dark' ? '#0b1220' : '#f4f6fa')
   }
 }
 

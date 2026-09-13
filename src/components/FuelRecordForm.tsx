@@ -148,7 +148,7 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
       open={isOpen}
       onClose={onClose}
       title={record ? 'Edit Fuel Record' : 'Add Fuel Record'}
-      size="sm"
+      size="md"
     >
       {error && <Alert className="mb-4">{error}</Alert>}
 

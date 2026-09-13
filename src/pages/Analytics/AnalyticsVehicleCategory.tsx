@@ -45,7 +45,7 @@ export default function AnalyticsVehicleCategory() {
       .finally(() => setLoading(false))
   }, [])
 
-  const COLORS = ['#0ea5e9', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#14b8a6']
+  const COLORS = ['#2563eb', '#60a5fa', '#0e9f6e', '#f59e0b', '#ef4444', '#6366f1', '#38bdf8', '#84cc16']
 
   const isMobile = screenWidth < 768
   const outerRadius = isMobile ? 80 : 120
@@ -70,7 +70,7 @@ export default function AnalyticsVehicleCategory() {
   return (
     <div className="app-page space-y-5">
       <section className="app-hero p-5 md:p-7">
-        <p className="text-xs font-semibold uppercase app-hero-muted">Analytics</p>
+        <p className="app-eyebrow app-hero-muted">Analytics</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Vehicle Category</h1>
         <p className="mt-2 text-sm app-hero-muted">Spend distribution by vehicle category.</p>
       </section>
@@ -81,6 +81,10 @@ export default function AnalyticsVehicleCategory() {
           <EmptyState title="No data available" description="There is nothing to show for the last 6 months." />
         )}
         {!loading && !error && data.length > 0 && (
+          <>
+          <p className="mb-3 px-1 text-sm text-muted-foreground">
+            Category spend for the last 6 months across {data.length} categories.
+          </p>
           <div className={isMobile ? "h-96" : "h-96 md:h-[500px]"}>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -111,6 +115,7 @@ export default function AnalyticsVehicleCategory() {
               </PieChart>
             </ResponsiveContainer>
           </div>
+          </>
         )}
       </Card>
     </div>

@@ -46,10 +46,10 @@ export function Dialog({ open, onClose, title, children, className, size = 'md' 
       aria-labelledby={title ? 'dialog-title' : undefined}
       onClick={onClose}
     >
-      <div className="absolute inset-0 bg-slate-950/55 backdrop-blur-[3px]" />
+      <div className="absolute inset-0 bg-shell/55 backdrop-blur-[3px]" />
       <div
         className={cn(
-          'relative z-10 w-full rounded-t-2xl border border-border bg-surface-elevated shadow-2xl shadow-black/30 md:rounded-xl',
+          'relative z-10 w-full rounded-t-[var(--radius-panel)] border border-border bg-surface-elevated shadow-2xl shadow-black/30 md:rounded-[var(--radius-card)]',
           'animate-slide-up max-h-[92vh] overflow-y-auto md:animate-scale-in md:max-h-[90vh]',
           sizeClass[size],
           className

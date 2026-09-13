@@ -16,8 +16,8 @@ export default defineConfig({
       manifest: {
         name: "Fuel Expenses",
         short_name: "Fuel",
-        theme_color: "#0f1419",
-        background_color: "#0f1419",
+        theme_color: "#0b1220",
+        background_color: "#0b1220",
         display: "standalone",
         description: "Track vehicle fuel expenses, vehicles, and analytics.",
         start_url: "/",
