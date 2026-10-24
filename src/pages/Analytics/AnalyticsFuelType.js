@@ -1,0 +1,109 @@
+import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
+import { useEffect, useState } from 'react';
+import { Card, PageLoading, EmptyState, Alert } from '../../components/ui';
+import { getFuelTypeAnalytics } from '../../services/analytics';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+export default function AnalyticsFuelType() {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [screenWidth, setScreenWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+    useEffect(() => {
+        const onResize = () => setScreenWidth(window.innerWidth);
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
+    useEffect(() => {
+        const end = new Date();
+        const start = new Date();
+        start.setMonth(end.getMonth() - 6);
+        setLoading(true);
+        getFuelTypeAnalytics(start, end)
+            .then((res) => {
+            // API response format: { status, message, error, data: [{ year, month, petrolCost, dieselCost }] }
+            const responseData = res.data?.data;
+            if (!Array.isArray(responseData)) {
+                console.error('Unexpected API response format:', res.data);
+                setError('Invalid data format. Check console for details.');
+                return;
+            }
+            if (responseData.length === 0) {
+                setData([]);
+                return;
+            }
+            // Helper function to construct date string from year, month
+            const constructDate = (it) => {
+                const month = String(it.month ?? '').padStart(2, '0');
+                const year = String(it.year ?? '');
+                if (month && year) {
+                    // Format as "MMM YYYY" for display (e.g., "Jun 2025")
+                    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    const monthIndex = parseInt(month, 10) - 1;
+                    const monthName = monthIndex >= 0 && monthIndex < 12 ? monthNames[monthIndex] : month;
+                    return `${monthName} ${year}`;
+                }
+                return `${month}/${year}`;
+            };
+            // Transform data to have petrolCost and dieselCost for each date
+            const normalized = responseData.map((it) => {
+                const date = constructDate(it);
+                const petrolCost = Number(it.petrolCost ?? 0);
+                const dieselCost = Number(it.dieselCost ?? 0);
+                return {
+                    date,
+                    petrolCost,
+                    dieselCost,
+                    _sortKey: `${it.year}${String(it.month ?? '').padStart(2, '0')}`
+                };
+            }).sort((a, b) => {
+                // Sort by date chronologically
+                if (a._sortKey < b._sortKey)
+                    return -1;
+                if (a._sortKey > b._sortKey)
+                    return 1;
+                return 0;
+            }).map(({ _sortKey, ...entry }) => entry); // Remove sort key from final data
+            setData(normalized);
+        })
+            .catch((err) => {
+            console.error('Analytics error:', err);
+            setError('Failed to load analytics');
+        })
+            .finally(() => setLoading(false));
+    }, []);
+    const COLORS = ['#2563eb', '#60a5fa', '#0e9f6e', '#f59e0b', '#ef4444', '#6366f1', '#38bdf8', '#84cc16'];
+    const isMobile = screenWidth < 768;
+    const outerRadius = isMobile ? 80 : 120;
+    const innerRadius = isMobile ? 40 : 60;
+    const money = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+    // Aggregate total petrol and diesel costs across all dates
+    const totalPetrolCost = data.reduce((sum, item) => sum + (item.petrolCost || 0), 0);
+    const totalDieselCost = data.reduce((sum, item) => sum + (item.dieselCost || 0), 0);
+    // Create chart data - total Petrol vs total Diesel
+    const chartData = [];
+    if (totalPetrolCost > 0) {
+        chartData.push({
+            name: 'Petrol',
+            value: Math.round(totalPetrolCost),
+            type: 'Petrol'
+        });
+    }
+    if (totalDieselCost > 0) {
+        chartData.push({
+            name: 'Diesel',
+            value: Math.round(totalDieselCost),
+            type: 'Diesel'
+        });
+    }
+    const CustomTooltip = ({ active, payload }) => {
+        if (active && payload && payload.length) {
+            return (_jsxs("div", { className: "bg-surface-elevated border border-border rounded-lg shadow-lg p-3", children: [_jsx("p", { className: "font-medium text-foreground mb-1", children: payload[0].name }), _jsxs("p", { className: "text-sm text-muted-foreground", children: ["Total: ", _jsx("span", { className: "font-semibold", children: money.format(payload[0].value) })] })] }));
+        }
+        return null;
+    };
+    return (_jsxs("div", { className: "app-page space-y-5", children: [_jsxs("section", { className: "app-hero p-5 md:p-7", children: [_jsx("p", { className: "app-eyebrow app-hero-muted", children: "Analytics" }), _jsx("h1", { className: "mt-2 text-3xl font-semibold tracking-tight md:text-4xl", children: "Fuel Type" }), _jsx("p", { className: "mt-2 text-sm app-hero-muted", children: "Spend split across fuel types." })] }), _jsxs(Card, { padding: false, className: "section-panel p-4 md:p-6", children: [loading && _jsx(PageLoading, { label: "Loading\u2026" }), error && _jsx(Alert, { className: "m-2", children: error }), !loading && !error && chartData.length === 0 && (_jsx(EmptyState, { title: "No data available", description: "There is nothing to show for the last 6 months." })), !loading && !error && chartData.length > 0 && (_jsxs(_Fragment, { children: [_jsx("p", { className: "mb-3 px-1 text-sm text-muted-foreground", children: "Fuel type spend comparison for the last 6 months." }), _jsx("div", { className: isMobile ? "h-96" : "h-96 md:h-[500px]", children: _jsx(ResponsiveContainer, { width: "100%", height: "100%", children: _jsxs(PieChart, { children: [_jsx(Pie, { data: chartData, dataKey: "value", nameKey: "name", cx: "50%", cy: "50%", outerRadius: outerRadius, innerRadius: innerRadius, paddingAngle: 2, label: ({ name, value }) => `${name}: ₹${Math.round(value).toLocaleString('en-IN')}`, labelLine: false, children: chartData.map((entry, index) => {
+                                                    // Blue pair for Petrol / Diesel
+                                                    const color = entry.type === 'Petrol' ? COLORS[0] : COLORS[1];
+                                                    return _jsx(Cell, { fill: color }, index);
+                                                }) }), _jsx(Tooltip, { content: _jsx(CustomTooltip, {}) }), _jsx(Legend, { verticalAlign: isMobile ? "bottom" : "middle", align: isMobile ? "center" : "right", layout: isMobile ? "horizontal" : "vertical", wrapperStyle: { fontSize: '12px' }, iconType: "circle" })] }) }) })] }))] })] }));
+}

@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { Card } from '../components/ui'
+import { endpoints, url } from '../services/api'
 
 declare global {
   interface Window {
@@ -11,7 +12,6 @@ declare global {
 }
 
 const GOOGLE_CLIENT_ID = '236873673590-2cbnveachalcb7slscl21fo3vl8ocd54.apps.googleusercontent.com'
-const AUTH_BASE = 'https://api.fuel.contactsunny.com/user'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -36,7 +36,7 @@ export default function Login() {
           const idToken = response?.credential
           if (!idToken) return
           try {
-            const { data } = await axios.post(`${AUTH_BASE}/login`, { idToken })
+            const { data } = await axios.post(url(endpoints.auth.baseUrl, endpoints.auth.login), { idToken })
             if (data?.status === '0') {
               localStorage.setItem('user', JSON.stringify(data.data.user))
               localStorage.setItem('token', data.data.token)

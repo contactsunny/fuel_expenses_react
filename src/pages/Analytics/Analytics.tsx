@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { ChartPie, Fuel, IndianRupee, Tags } from 'lucide-react'
+import { Fuel, IndianRupee, Tags } from 'lucide-react'
 import { Card } from '../../components/ui'
 
 const views = [
@@ -46,18 +46,6 @@ export default function Analytics() {
           </NavLink>
         ))}
       </div>
-
-      <Card className="flex items-start gap-3 border-dashed">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-muted text-muted-foreground">
-          <ChartPie className="h-4 w-4" aria-hidden />
-        </div>
-        <div>
-          <p className="text-sm font-medium text-foreground">Same data window as before</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Charts still cover the last six months. Presentation only — no new analytics filters.
-          </p>
-        </div>
-      </Card>
     </div>
   )
 }

@@ -13,7 +13,17 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   return config;
 });
 
-const API_BASE = "https://api.fuel.contactsunny.com";
+function readApiBaseUrl(): string {
+  const value = import.meta.env.VITE_API_BASE_URL?.trim();
+  if (!value) {
+    throw new Error(
+      "VITE_API_BASE_URL is not set. Set it in .env or .env.local.",
+    );
+  }
+  return value.replace(/\/+$/, "");
+}
+
+export const API_BASE = readApiBaseUrl();
 
 export const endpoints = {
   auth: {
@@ -54,6 +64,9 @@ export const endpoints = {
     getUserServiceRecords: "",
     updateServiceRecord: "/{id}",
     deleteServiceRecord: "/{id}",
+  },
+  preferences: {
+    baseUrl: `${API_BASE}/preferences`,
   },
 };
 

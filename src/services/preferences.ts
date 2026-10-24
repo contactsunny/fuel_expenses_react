@@ -1,16 +1,14 @@
-import { api } from './api'
-
-const API_BASE = "https://api.fuel.contactsunny.com"
+import { api, endpoints } from './api'
 
 export function savePreferences(payload: {
   defaultVehicleId?: string
   defaultFuelType?: string
   defaultPaymentType?: string
 }) {
-  return api.post(`${API_BASE}/preferences`, payload)
+  return api.post(endpoints.preferences.baseUrl, payload)
 }
 
 export function getPreferences() {
-  return api.get(`${API_BASE}/preferences`)
+  return api.get(endpoints.preferences.baseUrl)
 }
 
