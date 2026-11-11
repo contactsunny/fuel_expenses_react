@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { useFuelRecord } from "../contexts/FuelRecordContext";
-import FuelRecordForm from "./FuelRecordForm";
+import FuelRecordForm from "./FuelRecordForm.tsx";
 import { getPreferences } from "../services/preferences";
 import { cn } from "../utils/cn";
 import { Button } from "./ui";
