@@ -7,7 +7,7 @@ export function Select({ className, children, style, ...props }: SelectProps) {
   return (
     <select
       className={cn(
-        'w-full min-w-0 h-11 px-3 text-sm rounded-[var(--radius-control)] appearance-none md:h-10',
+        'w-full min-w-0 h-11 px-3 text-base rounded-[var(--radius-control)] appearance-none md:h-10 md:text-sm',
         'bg-surface border border-border text-foreground',
         'hover:border-muted-foreground/40',
         'focus:outline-none focus:ring-2 focus:ring-ring focus:border-accent',

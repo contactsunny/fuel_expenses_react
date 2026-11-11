@@ -7,7 +7,9 @@ export function Input({ className, ...props }: InputProps) {
   return (
     <input
       className={cn(
-        'w-full min-w-0 h-11 px-3 text-sm rounded-[var(--radius-control)] md:h-10',
+        // iOS Safari zooms the page when a focused form control uses <16px text.
+        // Keep the rendered size at 16px on mobile, even if a caller adds text-sm.
+        'w-full min-w-0 h-11 px-3 text-base rounded-[var(--radius-control)] md:h-10 md:text-sm',
         'bg-surface border border-border text-foreground placeholder:text-muted-foreground',
         'hover:border-muted-foreground/40',
         'focus:outline-none focus:ring-2 focus:ring-ring focus:border-accent',
