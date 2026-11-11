@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { Card } from '../components/ui'
@@ -13,8 +13,32 @@ declare global {
 
 const GOOGLE_CLIENT_ID = '236873673590-2cbnveachalcb7slscl21fo3vl8ocd54.apps.googleusercontent.com'
 
+let googleIdentityScript: Promise<void> | undefined
+
+function loadGoogleIdentityScript(): Promise<void> {
+  if (window.google?.accounts?.id) return Promise.resolve()
+  if (!googleIdentityScript) {
+    googleIdentityScript = new Promise<void>((resolve, reject) => {
+      const existing = document.querySelector<HTMLScriptElement>('script[data-google-identity]')
+      const script = existing ?? document.createElement('script')
+      script.src = 'https://accounts.google.com/gsi/client'
+      script.async = true
+      script.defer = true
+      script.dataset.googleIdentity = 'true'
+      script.onload = () => resolve()
+      script.onerror = () => reject(new Error('Google sign-in could not be loaded'))
+      if (!existing) document.head.appendChild(script)
+    }).catch((error) => {
+      googleIdentityScript = undefined
+      throw error
+    })
+  }
+  return googleIdentityScript!
+}
+
 export default function Login() {
   const navigate = useNavigate()
+  const [loginError, setLoginError] = useState('')
 
   useEffect(() => {
     if (localStorage.getItem('token')) {
@@ -24,12 +48,9 @@ export default function Login() {
   }, [navigate])
 
   useEffect(() => {
-    const script = document.createElement('script')
-    script.src = 'https://accounts.google.com/gsi/client'
-    script.async = true
-    script.defer = true
-    document.body.appendChild(script)
-    script.onload = () => {
+    let cancelled = false
+    loadGoogleIdentityScript().then(() => {
+      if (cancelled) return
       window.google?.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         callback: async (response: any) => {
@@ -41,20 +62,27 @@ export default function Login() {
               localStorage.setItem('user', JSON.stringify(data.data.user))
               localStorage.setItem('token', data.data.token)
               navigate('/live/dashboard', { replace: true })
+            } else {
+              setLoginError('Sign-in was not accepted. Please try again.')
             }
-          } catch {
-            // ignore
+          } catch (error) {
+            console.error('Login request failed:', error)
+            setLoginError('Could not reach the login server. Check that the API is running and try again.')
           }
         },
       })
       const container = document.getElementById('googleBtn')
       if (container) {
+        container.replaceChildren()
         window.google?.accounts.id.renderButton(container, { theme: 'outline', size: 'large', width: 320 })
-        window.google?.accounts.id.prompt()
       }
-    }
+    }).catch((error) => {
+      console.error(error)
+      if (!cancelled) setLoginError('Google sign-in could not be loaded. Check your connection and try again.')
+    })
     return () => {
-      document.body.removeChild(script)
+      cancelled = true
+      window.google?.accounts.id.cancel()
     }
   }, [])
 
@@ -82,6 +110,7 @@ export default function Login() {
             <p className="mt-1.5 text-sm text-muted-foreground">Sign in to continue</p>
           </div>
           <div id="googleBtn" className="flex justify-center min-h-[44px]" />
+          {loginError && <p role="alert" className="mt-4 text-sm text-danger">{loginError}</p>}
         </div>
       </Card>
       </div>

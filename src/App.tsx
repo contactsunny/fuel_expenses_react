@@ -1,6 +1,6 @@
 import { Route, Routes, Navigate } from 'react-router-dom'
 import type { ReactElement } from 'react'
-import Login from './pages/Login'
+import Login from './pages/Login.tsx'
 import Layout from './components/Layout'
 import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
@@ -8,7 +8,9 @@ import Settings from './pages/Settings'
 import Vehicles from './pages/Vehicles'
 import Categories from './pages/Categories'
 import ServiceRecords from './pages/ServiceRecords'
-import Analytics from './pages/Analytics/Analytics'
+// Use the TypeScript source explicitly: a legacy compiled .js sibling exists
+// and can be selected first by the dev server's extension resolution.
+import Analytics from './pages/Analytics/Analytics.tsx'
 import AnalyticsVehicleCategory from './pages/Analytics/AnalyticsVehicleCategory'
 import AnalyticsFuelPrice from './pages/Analytics/AnalyticsFuelPrice'
 import AnalyticsFuelType from './pages/Analytics/AnalyticsFuelType'
