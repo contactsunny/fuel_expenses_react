@@ -238,6 +238,7 @@
     margin-inline: auto;
     width: 100%;
     max-width: 76rem;
+    min-width: 0;
   }
 
   .app-eyebrow {

@@ -421,12 +421,12 @@ export default function Layout() {
         </nav>
       </aside>
 
-      <div className="max-w-screen-2xl mx-auto w-full">
+      <div className="mx-auto min-w-0 w-full max-w-screen-2xl">
         <div
           className={sidebarOpen ? "md:ml-72" : "md:ml-0"}
           style={{ transition: "margin-left 0.3s" }}
         >
-          <main className="px-3 py-4 md:p-8 pb-[calc(6rem+env(safe-area-inset-bottom,0px))] md:pb-8 animate-fade-in">
+          <main className="min-w-0 overflow-x-clip px-3 py-4 md:p-8 pb-[calc(6rem+env(safe-area-inset-bottom,0px))] md:pb-8 animate-fade-in">
             <Outlet />
             <footer className="mt-12 hidden pb-4 text-center text-xs text-muted-foreground md:block">
               © {new Date().getFullYear()}{" "}

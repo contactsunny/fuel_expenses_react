@@ -12,9 +12,9 @@ interface StatChipProps {
 export function StatChip({ children, className, variant = 'chip', label }: StatChipProps) {
   if (variant === 'metric') {
     return (
-      <div className={cn('metric-card px-3.5 py-3 md:px-4 md:py-3.5', className)}>
+      <div className={cn('metric-card min-w-0 overflow-hidden px-3.5 py-3 md:px-4 md:py-3.5', className)}>
         {label ? <p className="metric-label">{label}</p> : null}
-        <div className={cn('metric-value', label && 'mt-1')}>{children}</div>
+        <div className={cn('metric-value min-w-0 break-words', label && 'mt-1')}>{children}</div>
       </div>
     )
   }

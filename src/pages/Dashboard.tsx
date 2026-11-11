@@ -279,7 +279,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="app-page space-y-5">
+    <div className="app-page min-w-0 space-y-5">
       <section className="app-hero overflow-hidden p-5 md:p-7">
         <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div className="min-w-0">
@@ -296,7 +296,7 @@ export default function Dashboard() {
         </div>
       </section>
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid min-w-0 grid-cols-[repeat(2,minmax(0,1fr))] gap-3 md:grid-cols-4">
         <StatChip variant="metric" label="Range" className="col-span-2 md:col-span-1">
           <span className="flex items-start gap-2 text-base md:text-xl">
             <CalendarDays className="mt-1 h-4 w-4 shrink-0 text-accent" aria-hidden />
