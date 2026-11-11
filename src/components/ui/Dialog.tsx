@@ -1,5 +1,6 @@
 import type { HTMLAttributes, ReactNode, MouseEvent } from 'react'
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import { cn } from '../../utils/cn'
 import { Button } from './Button'
@@ -26,11 +27,14 @@ export function Dialog({ open, onClose, title, children, className, size = 'md' 
       if (e.key === 'Escape') onClose()
     }
     document.addEventListener('keydown', onKey)
-    const prev = document.body.style.overflow
+    const prevBodyOverflow = document.body.style.overflow
+    const prevHtmlOverflow = document.documentElement.style.overflow
     document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
     return () => {
       document.removeEventListener('keydown', onKey)
-      document.body.style.overflow = prev
+      document.body.style.overflow = prevBodyOverflow
+      document.documentElement.style.overflow = prevHtmlOverflow
     }
   }, [open, onClose])
 
@@ -38,7 +42,7 @@ export function Dialog({ open, onClose, title, children, className, size = 'md' 
 
   const stop = (e: MouseEvent) => e.stopPropagation()
 
-  return (
+  return createPortal((
     <div
       className="fixed inset-0 z-50 flex items-end justify-center p-0 pt-[max(1rem,env(safe-area-inset-top,0px))] md:items-center md:p-4 md:pb-[max(1rem,env(safe-area-inset-bottom,0px))] animate-fade-in"
       role="dialog"
@@ -50,7 +54,7 @@ export function Dialog({ open, onClose, title, children, className, size = 'md' 
       <div
         className={cn(
           'relative z-10 w-full rounded-t-[var(--radius-panel)] border border-border bg-surface-elevated shadow-2xl shadow-black/30 md:rounded-[var(--radius-card)]',
-          'animate-slide-up max-h-[92vh] overflow-y-auto md:animate-scale-in md:max-h-[90vh]',
+          'animate-slide-up max-h-[92dvh] overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom,0px)] md:animate-scale-in md:max-h-[90vh] md:pb-0',
           sizeClass[size],
           className
         )}
@@ -71,7 +75,7 @@ export function Dialog({ open, onClose, title, children, className, size = 'md' 
         <div className="px-5 py-5">{children}</div>
       </div>
     </div>
-  )
+  ), document.body)
 }
 
 export function DialogFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {

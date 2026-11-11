@@ -35,8 +35,6 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden'
-
       setLoading(true)
       getUserVehicles()
         .then((res) => {
@@ -66,12 +64,6 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
           paymentType: defaultPreferences?.defaultPaymentType ?? 'UPI'
         })
       }
-    } else {
-      document.body.style.overflow = ''
-    }
-
-    return () => {
-      document.body.style.overflow = ''
     }
   }, [isOpen, record, defaultPreferences])
 
@@ -152,8 +144,8 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
     >
       {error && <Alert className="mb-4">{error}</Alert>}
 
-      <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-2">
-        <div className="md:col-span-2">
+      <form onSubmit={handleSubmit} className="grid min-w-0 gap-4 md:grid-cols-2">
+        <div className="min-w-0 md:col-span-2">
           <Label htmlFor="fuel-date">Date</Label>
           <Input
             id="fuel-date"
@@ -161,6 +153,7 @@ export default function FuelRecordForm({ isOpen, onClose, onSave, record, defaul
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
             style={{ colorScheme: resolvedTheme }}
+            className="max-w-full min-w-0"
             required
             autoComplete="off"
             data-lpignore="true"
